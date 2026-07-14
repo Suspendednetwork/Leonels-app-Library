@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Leonels App Library</title>
+  <style>
+    :root {
+      --bg: #020806;
+      --panel: rgba(3, 24, 16, 0.82);
+      --border: rgba(66, 255, 170, 0.28);
+      --text: #c2ffdf;
+      --muted: #89c7a8;
+      --accent: #5fff98;
+      --accent-2: #21e56f;
+      --danger: #ff6f7d;
+      --font: "Fira Code", "Consolas", "Menlo", monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      min-height: 100%;
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+    }
+
+    #matrix {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      width: 100vw;
+      height: 100vh;
+      opacity: 0.45;
+      pointer-events: none;
+    }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      background: radial-gradient(circle at top, rgba(32, 110, 67, 0.22), transparent 50%),
+        linear-gradient(to bottom, rgba(1, 12, 7, 0.45), rgba(1, 8, 5, 0.78));
+      pointer-events: none;
+    }
+
+    main {
+      position: relative;
+      z-index: 2;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem 1rem 2.5rem;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.2rem;
+      backdrop-filter: blur(2px);
+      box-shadow: 0 0 0 1px rgba(14, 55, 36, 0.4), 0 12px 34px rgba(0, 0, 0, 0.44);
+      margin-bottom: 1rem;
+    }
+
+    h1,
+    h2 {
+      margin: 0 0 0.8rem;
+      color: #a3ffd0;
+      letter-spacing: 0.02em;
+    }
+
+    p {
+      margin: 0.4rem 0 0;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .clone-btn {
+      margin-top: 1rem;
+      width: 100%;
+      border: 1px solid rgba(96, 255, 173, 0.42);
+      border-radius: 12px;
+      padding: 0.85rem 1rem;
+      background: linear-gradient(180deg, rgba(12, 67, 40, 0.95), rgba(7, 39, 24, 0.96));
+      color: #e8ffef;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.7rem;
+      cursor: pointer;
+      transition: transform 140ms ease, border-color 140ms ease, box-shadow 140ms ease;
+    }
+
+    .clone-btn:hover,
+    .clone-btn:focus-visible {
+      transform: translateY(-1px);
+      border-color: rgba(124, 255, 190, 0.9);
+      box-shadow: 0 0 18px rgba(90, 255, 161, 0.24);
+      outline: none;
+    }
+
+    .clone-btn:active {
+      transform: translateY(0);
+    }
+
+    .logo {
+      width: 1.65rem;
+      height: 1.65rem;
+      border-radius: 4px;
+      object-fit: contain;
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(130, 255, 196, 0.2);
+    }
+
+    .logo-fallback {
+      width: 1.65rem;
+      height: 1.65rem;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: #e5ffe6;
+      border: 1px solid rgba(130, 255, 196, 0.2);
+      background: linear-gradient(130deg, #1d6b43, #0a2f1d);
+    }
+
+    .status {
+      margin-top: 0.7rem;
+      min-height: 1.4rem;
+      color: #b2f7cf;
+      font-size: 0.95rem;
+    }
+
+    .status.error {
+      color: var(--danger);
+    }
+
+    .command {
+      margin-top: 0.8rem;
+      padding: 0.8rem;
+      border-radius: 8px;
+      border: 1px solid rgba(100, 255, 176, 0.24);
+      background: rgba(4, 20, 13, 0.8);
+      color: #b4ffd5;
+      overflow-x: auto;
+      font-size: 0.9rem;
+    }
+
+    .tree {
+      margin: 0.2rem 0 0;
+      padding-left: 0;
+      list-style: none;
+    }
+
+    .tree li {
+      margin: 0.33rem 0;
+      padding-left: 0.25rem;
+      color: #c7ffe2;
+      word-break: break-word;
+    }
+
+    .tree .label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      border: 1px solid rgba(120, 240, 179, 0.18);
+      border-radius: 999px;
+      padding: 0.16rem 0.58rem;
+      background: rgba(8, 32, 22, 0.75);
+    }
+
+    .tree ul {
+      list-style: none;
+      margin: 0.4rem 0 0.3rem 1.3rem;
+      padding-left: 0.7rem;
+      border-left: 1px dashed rgba(102, 255, 176, 0.22);
+    }
+
+    .meta {
+      margin-top: 0.45rem;
+      color: #85c9a8;
+      font-size: 0.88rem;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="matrix" aria-hidden="true"></canvas>
+  <div class="overlay" aria-hidden="true"></div>
+
+  <main>
+    <section class="card">
+      <h1>Leonels App Library</h1>
+      <p>Copy the setup command, open Terminal, paste it, and run it.</p>
+      <button id="copyCommandButton" class="clone-btn" type="button" aria-describedby="copyStatus">
+        <img id="logoImage" class="logo" src="logos/logo.png" alt="" />
+        <span id="logoFallback" class="logo-fallback" aria-hidden="true">LAL</span>
+        <span>Copy Leonels App Library Command</span>
+      </button>
+      <div id="copyStatus" class="status" role="status" aria-live="polite"></div>
+      <div class="command" id="commandPreview"></div>
+    </section>
+
+    <section class="card">
+      <h2>Bypasses Browser</h2>
+      <p>Live listing from this repository's <code>bypasses/</code> folder.</p>
+      <div class="meta" id="browserStatus" role="status" aria-live="polite">Loading bypasses…</div>
+      <ul id="bypassesTree" class="tree"></ul>
+    </section>
+  </main>
+
+  <script>
+    (function matrixRain() {
+      const canvas = document.getElementById("matrix");
+      const ctx = canvas.getContext("2d");
+      const chars = "アァカサタナハマヤャラワ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ$#@%&*";
+      let columns = 0;
+      let drops = [];
+      const fontSize = 16;
+
+      function resize() {
+        const dpr = window.devicePixelRatio || 1;
+        canvas.width = Math.floor(window.innerWidth * dpr);
+        canvas.height = Math.floor(window.innerHeight * dpr);
+        canvas.style.width = `${window.innerWidth}px`;
+        canvas.style.height = `${window.innerHeight}px`;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+        columns = Math.ceil(window.innerWidth / fontSize);
+        drops = Array.from({ length: columns }, () => Math.random() * -50);
+      }
+
+      function draw() {
+        ctx.fillStyle = "rgba(2, 8, 6, 0.08)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.fillStyle = "#48ff94";
+        ctx.font = `${fontSize}px monospace`;
+
+        for (let i = 0; i < drops.length; i += 1) {
+          const text = chars[Math.floor(Math.random() * chars.length)];
+          const x = i * fontSize;
+          const y = drops[i] * fontSize;
+          ctx.fillText(text, x, y);
+
+          if (y > window.innerHeight && Math.random() > 0.975) {
+            drops[i] = 0;
+          }
+          drops[i] += 0.7;
+        }
+      }
+
+      resize();
+      window.addEventListener("resize", resize);
+      setInterval(draw, 40);
+    })();
+
+    const command = "git clone https://github.com/Suspendednetwork/Leonels-app-Library.git";
+    const commandPreview = document.getElementById("commandPreview");
+    const copyStatus = document.getElementById("copyStatus");
+    commandPreview.textContent = command;
+
+    async function copyText(value) {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(value);
+        return;
+      }
+
+      const temp = document.createElement("textarea");
+      temp.value = value;
+      temp.setAttribute("readonly", "");
+      temp.style.position = "fixed";
+      temp.style.left = "-9999px";
+      document.body.appendChild(temp);
+      temp.select();
+      const ok = document.execCommand("copy");
+      document.body.removeChild(temp);
+      if (!ok) {
+        throw new Error("Clipboard copy is blocked");
+      }
+    }
+
+    document.getElementById("copyCommandButton").addEventListener("click", async () => {
+      copyStatus.classList.remove("error");
+      try {
+        await copyText(command);
+        copyStatus.textContent = "Copied. Open Terminal, paste the command, and press Enter.";
+      } catch (err) {
+        copyStatus.classList.add("error");
+        copyStatus.textContent = "Copy failed. Select the command above, copy manually, then paste it in Terminal.";
+      }
+    });
+
+    (function resolveLogo() {
+      const logo = document.getElementById("logoImage");
+      const fallback = document.getElementById("logoFallback");
+      const sources = [
+        "logos/logo.png",
+        "logos/logo.jpg",
+        "logos/logo.jpeg",
+        "logos/icon.png",
+        "logos/Logo.png"
+      ];
+      let index = 0;
+
+      logo.addEventListener("error", () => {
+        index += 1;
+        if (index < sources.length) {
+          logo.src = sources[index];
+          return;
+        }
+        logo.style.display = "none";
+        fallback.style.display = "inline-flex";
+      });
+      logo.src = sources[index];
+    })();
+
+    const owner = "Suspendednetwork";
+    const repo = "Leonels-app-Library";
+    const ref = "github-pages";
+    const rootPath = "bypasses";
+    const browserStatus = document.getElementById("browserStatus");
+    const tree = document.getElementById("bypassesTree");
+
+    function encodeGitHubPath(path) {
+      return path.split("/").map(encodeURIComponent).join("/");
+    }
+
+    async function getContents(path) {
+      const url = `https://api.github.com/repos/${owner}/${repo}/contents/${encodeGitHubPath(path)}?ref=${encodeURIComponent(ref)}`;
+      const response = await fetch(url, { headers: { Accept: "application/vnd.github+json" } });
+
+      if (!response.ok) {
+        throw new Error(`API request failed (${response.status})`);
+      }
+
+      const data = await response.json();
+      return Array.isArray(data) ? data : [data];
+    }
+
+    function sortEntries(entries) {
+      return [...entries].sort((a, b) => {
+        if (a.type === b.type) {
+          return a.name.localeCompare(b.name);
+        }
+        return a.type === "dir" ? -1 : 1;
+      });
+    }
+
+    async function buildTree(path, parentEl) {
+      const entries = sortEntries(await getContents(path));
+      for (const entry of entries) {
+        const li = document.createElement("li");
+        const label = document.createElement("span");
+        label.className = "label";
+        label.textContent = `${entry.type === "dir" ? "📁" : "📄"} ${entry.name}`;
+        li.appendChild(label);
+
+        if (entry.type === "dir") {
+          const child = document.createElement("ul");
+          li.appendChild(child);
+          try {
+            await buildTree(entry.path, child);
+          } catch (dirErr) {
+            const errLi = document.createElement("li");
+            errLi.textContent = "⚠️ Unable to load this folder.";
+            child.appendChild(errLi);
+          }
+        }
+
+        parentEl.appendChild(li);
+      }
+    }
+
+    async function loadBypasses() {
+      tree.innerHTML = "";
+      try {
+        await buildTree(rootPath, tree);
+        browserStatus.textContent = "Loaded from GitHub API.";
+      } catch (err) {
+        browserStatus.textContent = "Unable to load bypasses from GitHub API.";
+        const fallback = document.createElement("li");
+        fallback.textContent = "No runtime listing available. Please browse the repository directly.";
+        tree.appendChild(fallback);
+      }
+    }
+
+    loadBypasses();
+  </script>
+</body>
+</html>
