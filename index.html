@@ -420,6 +420,44 @@
 
     loadBypasses();
   </script>
+  <div class="readme-modal" id="readmeModal">
+  <div class="readme-box">
+    <span class="close-btn" id="closeReadme">✖ Close</span>
+    <h2>ProjectRB README</h2>
+    <div id="projectReadme">
+      Loading README...
+    </div>
+  </div>
+</div>
 
+<script>
+const modal = document.getElementById("readmeModal");
+const openBtn = document.getElementById("openReadme");
+const closeBtn = document.getElementById("closeReadme");
+const readme = document.getElementById("projectReadme");
 
-</body></html>
+openBtn.onclick = async () => {
+  modal.style.display = "flex";
+
+  if (!readme.dataset.loaded) {
+    try {
+      const response = await fetch(
+        "https://raw.githubusercontent.com/Suspendednetwork/ProjectRB/main/README.md"
+      );
+
+      const markdown = await response.text();
+      readme.innerHTML = marked.parse(markdown);
+      readme.dataset.loaded = "true";
+
+    } catch {
+      readme.textContent = "Failed to load README.";
+    }
+  }
+};
+
+closeBtn.onclick = () => {
+  modal.style.display = "none";
+};
+</script>
+</body>
+</html>
