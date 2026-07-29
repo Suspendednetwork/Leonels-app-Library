@@ -1,255 +1,768 @@
-<html lang="en"><head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Leonels App Library</title>
+
+  <!-- Monospace/Hacker-style font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap"
+    rel="stylesheet"
+  />
+
   <style>
     :root {
-      --bg: #020806;
-      --panel: rgba(3, 24, 16, 0.82);
-      --border: rgba(66, 255, 170, 0.28);
-      --text: #c2ffdf;
-      --muted: #89c7a8;
-      --accent: #5fff98;
-      --accent-2: #21e56f;
-      --danger: #ff6f7d;
-      --font: "Fira Code", "Consolas", "Menlo", monospace;
+      --bg: #020906;
+      --bg-2: #04130d;
+      --panel: rgba(6, 28, 18, 0.82);
+      --panel-2: rgba(10, 38, 25, 0.75);
+      --text: #caffdf;
+      --muted: #8ec9a8;
+      --line: rgba(98, 255, 177, 0.28);
+      --line-strong: rgba(98, 255, 177, 0.55);
+      --glow: #59ffa3;
+      --glow-2: #1de37b;
+      --danger: #ff7084;
+      --radius: 14px;
+      --shadow: 0 0 0 1px rgba(40, 116, 77, 0.35), 0 10px 30px rgba(0, 0, 0, 0.45);
+      --font: "Share Tech Mono", "Fira Code", "Consolas", "Menlo", monospace;
     }
 
     * {
       box-sizing: border-box;
     }
 
-    html,
-    body {
-      width: 100%;
-      min-height: 100%;
+    html, body {
       margin: 0;
+      min-height: 100%;
       background: var(--bg);
       color: var(--text);
       font-family: var(--font);
     }
 
+    body {
+      position: relative;
+      overflow-x: hidden;
+    }
+
     #matrix {
       position: fixed;
       inset: 0;
-      z-index: 0;
       width: 100vw;
       height: 100vh;
+      z-index: 0;
       opacity: 0.45;
       pointer-events: none;
     }
 
-    .overlay {
+    .bg-overlay {
       position: fixed;
       inset: 0;
       z-index: 1;
-      background: radial-gradient(circle at top, rgba(32, 110, 67, 0.22), transparent 50%),
-        linear-gradient(to bottom, rgba(1, 12, 7, 0.45), rgba(1, 8, 5, 0.78));
       pointer-events: none;
+      background:
+        radial-gradient(circle at 20% 0%, rgba(22, 120, 70, 0.25), transparent 40%),
+        radial-gradient(circle at 80% 100%, rgba(8, 78, 44, 0.2), transparent 35%),
+        linear-gradient(to bottom, rgba(1, 8, 5, 0.45), rgba(1, 8, 5, 0.82));
     }
 
-    main {
+    .container {
       position: relative;
       z-index: 2;
-      max-width: 900px;
+      width: min(1100px, 94vw);
       margin: 0 auto;
-      padding: 2rem 1rem 2.5rem;
+      padding: 1.5rem 0.2rem 2.5rem;
     }
 
-    .card {
+    .panel {
+      border: 1px solid var(--line);
       background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 1.2rem;
+      box-shadow: var(--shadow);
+      border-radius: var(--radius);
       backdrop-filter: blur(2px);
-      box-shadow: 0 0 0 1px rgba(14, 55, 36, 0.4), 0 12px 34px rgba(0, 0, 0, 0.44);
+    }
+
+    header.site-header {
+      padding: 1.3rem 1.2rem;
       margin-bottom: 1rem;
+      animation: riseIn 600ms ease both;
     }
 
-    h1,
-    h2 {
-      margin: 0 0 0.8rem;
-      color: #a3ffd0;
-      letter-spacing: 0.02em;
-    }
-
-    p {
-      margin: 0.4rem 0 0;
-      color: var(--muted);
-      line-height: 1.5;
-    }
-
-    .clone-btn {
-      margin-top: 1rem;
-      width: 100%;
-      border: 1px solid rgba(96, 255, 173, 0.42);
-      border-radius: 12px;
-      padding: 0.85rem 1rem;
-      background: linear-gradient(180deg, rgba(12, 67, 40, 0.95), rgba(7, 39, 24, 0.96));
-      color: #e8ffef;
-      font-family: inherit;
-      font-size: 1rem;
-      font-weight: 700;
+    .title-row {
       display: flex;
       align-items: center;
-      justify-content: center;
-      gap: 0.7rem;
-      cursor: pointer;
-      transition: transform 140ms ease, border-color 140ms ease, box-shadow 140ms ease;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
     }
 
-    .clone-btn:hover,
-    .clone-btn:focus-visible {
-      transform: translateY(-1px);
-      border-color: rgba(124, 255, 190, 0.9);
-      box-shadow: 0 0 18px rgba(90, 255, 161, 0.24);
+    h1 {
+      margin: 0;
+      font-size: clamp(1.45rem, 2.8vw, 2.25rem);
+      color: #adffd6;
+      letter-spacing: 0.03em;
+      text-shadow: 0 0 16px rgba(89, 255, 163, 0.28);
+    }
+
+    .subtitle {
+      margin: 0.45rem 0 0;
+      color: var(--muted);
+      font-size: 0.98rem;
+      line-height: 1.45;
+    }
+
+    .counter {
+      border: 1px solid var(--line-strong);
+      padding: 0.38rem 0.68rem;
+      border-radius: 999px;
+      color: #d7ffeb;
+      background: rgba(8, 32, 21, 0.65);
+      box-shadow: 0 0 15px rgba(70, 255, 155, 0.15) inset;
+      font-size: 0.92rem;
+      white-space: nowrap;
+    }
+
+    .controls {
+      margin: 1rem 0 1rem;
+      padding: 0.9rem;
+      display: grid;
+      gap: 0.6rem;
+      animation: riseIn 700ms ease both;
+    }
+
+    .search-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: rgba(4, 20, 13, 0.82);
+      padding: 0.5rem 0.75rem;
+    }
+
+    .search-wrap span {
+      color: #8fffbe;
+      font-size: 0.95rem;
+      opacity: 0.9;
+    }
+
+    #searchInput {
+      width: 100%;
+      border: none;
       outline: none;
+      background: transparent;
+      color: var(--text);
+      font: inherit;
+      font-size: 0.96rem;
     }
 
-    .clone-btn:active {
-      transform: translateY(0);
+    #searchInput::placeholder {
+      color: #78b293;
     }
 
-    .logo {
-      width: 1.65rem;
-      height: 1.65rem;
-      border-radius: 4px;
-      object-fit: contain;
+    .apps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 0.9rem;
+    }
+
+    .app-card {
+      padding: 0.9rem;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(7, 27, 18, 0.95), rgba(4, 17, 11, 0.95));
+      transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+      opacity: 0;
+      transform: translateY(8px) scale(0.99);
+      animation: cardIn 420ms ease forwards;
+    }
+
+    .app-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(111, 255, 187, 0.75);
+      box-shadow: 0 0 18px rgba(89, 255, 163, 0.18);
+    }
+
+    .card-top {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+      margin-bottom: 0.7rem;
+    }
+
+    .app-logo {
+      width: 2.1rem;
+      height: 2.1rem;
+      border-radius: 8px;
+      object-fit: cover;
+      border: 1px solid rgba(141, 255, 203, 0.25);
       background: rgba(0, 0, 0, 0.35);
-      border: 1px solid rgba(130, 255, 196, 0.2);
+      flex: 0 0 auto;
     }
 
-    .logo-fallback {
-      width: 1.65rem;
-      height: 1.65rem;
+    .fallback-icon {
+      width: 2.1rem;
+      height: 2.1rem;
+      border-radius: 8px;
       display: none;
       align-items: center;
       justify-content: center;
-      border-radius: 4px;
-      font-size: 0.72rem;
-      font-weight: 800;
-      color: #e5ffe6;
-      border: 1px solid rgba(130, 255, 196, 0.2);
-      background: linear-gradient(130deg, #1d6b43, #0a2f1d);
+      border: 1px solid rgba(141, 255, 203, 0.25);
+      background: linear-gradient(130deg, #185e3a, #0a291a);
+      color: #e4fff1;
+      font-size: 0.83rem;
+      font-weight: 700;
+      flex: 0 0 auto;
     }
 
-    .status {
-      margin-top: 0.7rem;
-      min-height: 1.4rem;
-      color: #b2f7cf;
-      font-size: 0.95rem;
+    .app-name {
+      margin: 0;
+      color: #bcffdd;
+      font-size: 1.05rem;
+      line-height: 1.1;
     }
 
-    .status.error {
+    .app-desc {
+      margin: 0 0 0.8rem;
+      color: var(--muted);
+      font-size: 0.93rem;
+      line-height: 1.45;
+      min-height: 2.8em;
+    }
+
+    .btn {
+      width: 100%;
+      border: 1px solid rgba(123, 255, 190, 0.45);
+      border-radius: 10px;
+      background: linear-gradient(180deg, rgba(11, 70, 42, 0.95), rgba(6, 35, 22, 0.95));
+      color: #e8fff2;
+      font: inherit;
+      font-size: 0.94rem;
+      font-weight: 700;
+      padding: 0.65rem 0.8rem;
+      cursor: pointer;
+      transition: transform 140ms ease, box-shadow 140ms ease, border-color 140ms ease;
+    }
+
+    .btn:hover, .btn:focus-visible {
+      transform: translateY(-1px);
+      border-color: rgba(154, 255, 212, 0.9);
+      box-shadow: 0 0 16px rgba(89, 255, 163, 0.25);
+      outline: none;
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .empty-state {
+      margin-top: 0.8rem;
+      padding: 0.8rem;
+      border: 1px dashed rgba(120, 255, 189, 0.3);
+      border-radius: 10px;
+      color: var(--muted);
+      text-align: center;
+      background: rgba(6, 24, 16, 0.55);
+    }
+
+    footer {
+      margin-top: 1.1rem;
+      padding: 0.8rem 1rem;
+      text-align: center;
+      color: #95cfae;
+      font-size: 0.9rem;
+      animation: riseIn 800ms ease both;
+    }
+
+    footer a {
+      color: #b7ffe0;
+      text-underline-offset: 0.16em;
+    }
+
+    /* Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 30;
+      background: rgba(0, 0, 0, 0.72);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 0.9rem;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+      animation: fadeIn 180ms ease;
+    }
+
+    .modal {
+      width: min(900px, 100%);
+      max-height: 90vh;
+      overflow: hidden;
+      border: 1px solid var(--line-strong);
+      border-radius: 14px;
+      background: linear-gradient(180deg, rgba(6, 25, 16, 0.98), rgba(3, 15, 10, 0.98));
+      box-shadow: 0 0 0 1px rgba(60, 170, 113, 0.3), 0 24px 60px rgba(0, 0, 0, 0.6);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-head {
+      display: flex;
+      align-items: start;
+      justify-content: space-between;
+      gap: 0.7rem;
+      padding: 0.95rem;
+      border-bottom: 1px solid rgba(110, 255, 188, 0.25);
+      background: rgba(8, 33, 22, 0.75);
+    }
+
+    .modal-head-left {
+      display: flex;
+      gap: 0.7rem;
+      align-items: center;
+      min-width: 0;
+    }
+
+    .modal-title {
+      margin: 0;
+      font-size: 1.12rem;
+      color: #c8ffe4;
+    }
+
+    .modal-desc {
+      margin: 0.2rem 0 0;
+      color: #93cba9;
+      font-size: 0.92rem;
+      line-height: 1.35;
+    }
+
+    .close-btn {
+      border: 1px solid rgba(255, 153, 167, 0.45);
+      background: rgba(84, 12, 22, 0.55);
+      color: #ffd3db;
+      border-radius: 10px;
+      font: inherit;
+      font-size: 0.9rem;
+      padding: 0.42rem 0.65rem;
+      cursor: pointer;
+    }
+
+    .close-btn:hover, .close-btn:focus-visible {
+      outline: none;
+      box-shadow: 0 0 14px rgba(255, 111, 125, 0.35);
+      border-color: rgba(255, 153, 167, 0.75);
+    }
+
+    .modal-body {
+      padding: 0.9rem;
+      overflow: auto;
+    }
+
+    .readme-wrap {
+      border: 1px solid rgba(105, 255, 186, 0.2);
+      border-radius: 10px;
+      padding: 0.9rem;
+      background: rgba(5, 21, 14, 0.78);
+      min-height: 140px;
+    }
+
+    .readme-wrap p:first-child {
+      margin-top: 0;
+    }
+
+    .loading {
+      color: #9bffd0;
+    }
+
+    .error {
       color: var(--danger);
     }
 
-    .command {
-      margin-top: 0.8rem;
-      padding: 0.8rem;
-      border-radius: 8px;
-      border: 1px solid rgba(100, 255, 176, 0.24);
-      background: rgba(4, 20, 13, 0.8);
-      color: #b4ffd5;
-      overflow-x: auto;
-      font-size: 0.9rem;
+    /* README markdown styling */
+    .readme-wrap h1, .readme-wrap h2, .readme-wrap h3, .readme-wrap h4 {
+      color: #b4ffda;
+      margin-top: 1rem;
+      margin-bottom: 0.5rem;
+      line-height: 1.2;
     }
 
-    .tree {
-      margin: 0.2rem 0 0;
-      padding-left: 0;
-      list-style: none;
-    }
-
-    .tree li {
-      margin: 0.33rem 0;
-      padding-left: 0.25rem;
-      color: #c7ffe2;
+    .readme-wrap p, .readme-wrap li {
+      color: #c4f8db;
+      line-height: 1.45;
       word-break: break-word;
     }
 
-    .tree .label {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.45rem;
-      border: 1px solid rgba(120, 240, 179, 0.18);
-      border-radius: 999px;
-      padding: 0.16rem 0.58rem;
-      background: rgba(8, 32, 22, 0.75);
+    .readme-wrap a {
+      color: #9effc8;
     }
 
-    .tree ul {
-      list-style: none;
-      margin: 0.4rem 0 0.3rem 1.3rem;
-      padding-left: 0.7rem;
-      border-left: 1px dashed rgba(102, 255, 176, 0.22);
+    .readme-wrap code {
+      background: rgba(16, 55, 37, 0.65);
+      border: 1px solid rgba(108, 255, 187, 0.25);
+      border-radius: 6px;
+      padding: 0.1rem 0.3rem;
+      font-family: var(--font);
+      font-size: 0.9em;
     }
 
-    .meta {
-      margin-top: 0.45rem;
-      color: #85c9a8;
-      font-size: 0.88rem;
+    .readme-wrap pre {
+      background: rgba(3, 15, 10, 0.95);
+      border: 1px solid rgba(97, 255, 181, 0.2);
+      border-radius: 8px;
+      padding: 0.75rem;
+      overflow: auto;
     }
-    .readme-btn {
-  margin-top: 1rem;
-  width: 100%;
-  border: 1px solid rgba(96, 255, 173, 0.42);
-  border-radius: 12px;
-  padding: 0.85rem 1rem;
-  background: linear-gradient(180deg, rgba(12, 67, 40, 0.95), rgba(7, 39, 24, 0.96));
-  color: #e8ffef;
-  font-family: inherit;
-  font-size: 1rem;
-  font-weight: 700;
-  cursor: pointer;
-}
 
-.readme-modal {
-  display: none;
-  position: fixed;
-  inset: 0;
-  z-index: 10;
-  background: rgba(0,0,0,0.75);
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
-}
+    .readme-wrap pre code {
+      border: none;
+      background: transparent;
+      padding: 0;
+    }
 
-.readme-box {
-  max-width: 850px;
-  width: 100%;
-  max-height: 80vh;
-  overflow-y: auto;
-  background: #031810;
-  border: 1px solid rgba(66,255,170,0.35);
-  border-radius: 14px;
-  padding: 1.5rem;
-  color: #c2ffdf;
-}
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
 
-.close-btn {
-  float: right;
-  cursor: pointer;
-  color: #ff6f7d;
-  font-weight: bold;
-}
+    @keyframes riseIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes cardIn {
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @media (max-width: 580px) {
+      .container { width: 95vw; }
+      .modal-head {
+        padding: 0.8rem;
+      }
+      .modal-body {
+        padding: 0.75rem;
+      }
+    }
   </style>
-<script type="text/javascript" src="moz-extension://54a5bf59-33ca-4da5-bb15-1e41b8e9c916/content/fixHeadlessAudio.js"></script></head>
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
 <body>
-  <canvas id="matrix" aria-hidden="true" width="3324" height="1232" style="width: 1662px; height: 616px;"></canvas>
-  <div class="overlay" aria-hidden="true"></div>
- 
-  
+  <!-- Matrix background -->
+  <canvas id="matrix" aria-hidden="true"></canvas>
+  <div class="bg-overlay" aria-hidden="true"></div>
+
+  <div class="container">
+    <header class="site-header panel">
+      <div class="title-row">
+        <h1>Leonels App Library</h1>
+        <div class="counter" id="appCounter">Apps: 0</div>
+      </div>
+      <p class="subtitle">
+        A hacker-themed collection of apps, tools, and projects. Search, browse, and open each app README inside a reusable popup.
+      </p>
+    </header>
+
+    <section class="controls panel">
+      <label class="search-wrap" for="searchInput">
+        <span>⌕</span>
+        <input
+          id="searchInput"
+          type="text"
+          placeholder="Search apps by name..."
+          autocomplete="off"
+        />
+      </label>
+    </section>
+
+    <main>
+      <section id="appsGrid" class="apps-grid" aria-live="polite"></section>
+      <div id="emptyState" class="empty-state" hidden>No apps match your search.</div>
+    </main>
+
+    <footer class="panel">
+      GitHub:
+      <a href="https://github.com/Suspendednetwork/Leonels-app-Library" target="_blank" rel="noopener noreferrer">
+        Suspendednetwork/Leonels-app-Library
+      </a>
+    </footer>
+  </div>
+
+  <!-- Reusable Modal -->
+  <div id="modalBackdrop" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal">
+      <div class="modal-head">
+        <div class="modal-head-left">
+          <img id="modalLogo" class="app-logo" alt="" />
+          <div id="modalLogoFallback" class="fallback-icon" aria-hidden="true">APP</div>
+          <div>
+            <h2 id="modalTitle" class="modal-title">App Name</h2>
+            <p id="modalDescription" class="modal-desc"></p>
+          </div>
+        </div>
+        <button id="closeModalBtn" class="close-btn" type="button" aria-label="Close popup">✕ Close</button>
+      </div>
+      <div class="modal-body">
+        <div id="readmeContent" class="readme-wrap">
+          <p class="loading">Loading README...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- marked.js CDN for Markdown parsing -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
   <script>
+    /**
+     * Leonels App Library
+     * Single-file, GitHub Pages-ready app catalog with:
+     * - Matrix animated background
+     * - Dynamic app cards from JS array
+     * - Reusable modal loading markdown READMEs
+     * - Search + app counter
+     * - Fallback handling for missing logos/README
+     */
+
+    // --------------------------
+    // 1) App data source (reusable system)
+    // --------------------------
+    const apps = [
+      {
+        name: "ProjectRB",
+        logo: "logos/projectrb.png",
+        description: "Core project app with docs loaded from GitHub README.",
+        readme: "https://raw.githubusercontent.com/Suspendednetwork/ProjectRB/main/README.md"
+      },
+      {
+        name: "Example Tool",
+        logo: "logos/example-tool.png",
+        description: "Sample app entry to demonstrate multi-card rendering.",
+        readme: "https://raw.githubusercontent.com/user/repo/main/README.md"
+      },
+      {
+        name: "Local Utility",
+        logo: "",
+        description: "Local utility app with missing logo fallback preview.",
+        readme: ""
+      }
+    ];
+
+    // --------------------------
+    // 2) DOM references
+    // --------------------------
+    const appsGrid = document.getElementById("appsGrid");
+    const searchInput = document.getElementById("searchInput");
+    const appCounter = document.getElementById("appCounter");
+    const emptyState = document.getElementById("emptyState");
+
+    const modalBackdrop = document.getElementById("modalBackdrop");
+    const modalLogo = document.getElementById("modalLogo");
+    const modalLogoFallback = document.getElementById("modalLogoFallback");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalDescription = document.getElementById("modalDescription");
+    const readmeContent = document.getElementById("readmeContent");
+    const closeModalBtn = document.getElementById("closeModalBtn");
+
+    let currentAppInModal = null;
+
+    // --------------------------
+    // 3) Utility helpers
+    // --------------------------
+    function sanitizeText(value, fallback = "N/A") {
+      if (typeof value !== "string") return fallback;
+      const trimmed = value.trim();
+      return trimmed.length ? trimmed : fallback;
+    }
+
+    function initialsFromName(name) {
+      const parts = sanitizeText(name, "APP").split(/\s+/).slice(0, 2);
+      return parts.map(p => p[0]?.toUpperCase() || "").join("") || "APP";
+    }
+
+    function updateCounter(count) {
+      appCounter.textContent = `Apps: ${count}`;
+    }
+
+    // --------------------------
+    // 4) Card rendering system
+    // --------------------------
+    function createAppCard(app, index) {
+      const name = sanitizeText(app.name, "Unnamed App");
+      const description = sanitizeText(app.description, "No description available.");
+      const logo = sanitizeText(app.logo, "");
+      const readme = sanitizeText(app.readme, "");
+
+      const card = document.createElement("article");
+      card.className = "app-card";
+      card.style.animationDelay = `${Math.min(index * 70, 500)}ms`;
+
+      card.innerHTML = `
+        <div class="card-top">
+          <img class="app-logo" alt="${name} logo" />
+          <div class="fallback-icon" aria-hidden="true">${initialsFromName(name)}</div>
+          <h3 class="app-name">${name}</h3>
+        </div>
+        <p class="app-desc">${description}</p>
+        <button class="btn" type="button">Open README</button>
+      `;
+
+      const img = card.querySelector(".app-logo");
+      const fallback = card.querySelector(".fallback-icon");
+      const button = card.querySelector(".btn");
+
+      function showFallback() {
+        img.style.display = "none";
+        fallback.style.display = "inline-flex";
+      }
+
+      if (logo) {
+        img.src = logo;
+        img.addEventListener("error", showFallback, { once: true });
+      } else {
+        showFallback();
+      }
+
+      button.addEventListener("click", () => {
+        openModal({ name, description, logo, readme });
+      });
+
+      return card;
+    }
+
+    function renderApps(list) {
+      appsGrid.innerHTML = "";
+      list.forEach((app, i) => {
+        appsGrid.appendChild(createAppCard(app, i));
+      });
+
+      updateCounter(list.length);
+      emptyState.hidden = list.length !== 0;
+    }
+
+    function filterApps() {
+      const q = searchInput.value.trim().toLowerCase();
+      if (!q) {
+        renderApps(apps);
+        return;
+      }
+
+      const filtered = apps.filter(app =>
+        sanitizeText(app.name, "").toLowerCase().includes(q)
+      );
+      renderApps(filtered);
+    }
+
+    // --------------------------
+    // 5) Reusable modal + README loader
+    // --------------------------
+    function setModalLogo(logo, name) {
+      modalLogo.style.display = "";
+      modalLogoFallback.style.display = "none";
+      modalLogoFallback.textContent = initialsFromName(name);
+
+      function showFallback() {
+        modalLogo.style.display = "none";
+        modalLogoFallback.style.display = "inline-flex";
+      }
+
+      if (logo) {
+        modalLogo.src = logo;
+        modalLogo.alt = `${name} logo`;
+        modalLogo.onerror = showFallback;
+      } else {
+        showFallback();
+      }
+    }
+
+    async function loadReadme(readmeUrl) {
+      // If missing README URL
+      if (!readmeUrl) {
+        readmeContent.innerHTML = `<p class="error">README URL not provided for this app.</p>`;
+        return;
+      }
+
+      readmeContent.innerHTML = `<p class="loading">Loading README...</p>`;
+
+      try {
+        const response = await fetch(readmeUrl, { cache: "no-store" });
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+
+        const markdown = await response.text();
+        if (!markdown.trim()) {
+          readmeContent.innerHTML = `<p class="error">README is empty.</p>`;
+          return;
+        }
+
+        const html = marked.parse(markdown);
+        readmeContent.innerHTML = html;
+      } catch (error) {
+        readmeContent.innerHTML = `
+          <p class="error">Failed to load README. ${String(error.message || error)}</p>
+        `;
+      }
+    }
+
+    function openModal(app) {
+      currentAppInModal = app;
+
+      modalTitle.textContent = sanitizeText(app.name, "Unnamed App");
+      modalDescription.textContent = sanitizeText(app.description, "No description available.");
+      setModalLogo(sanitizeText(app.logo, ""), sanitizeText(app.name, "APP"));
+
+      modalBackdrop.classList.add("open");
+      document.body.style.overflow = "hidden";
+
+      loadReadme(sanitizeText(app.readme, ""));
+    }
+
+    function closeModal() {
+      modalBackdrop.classList.remove("open");
+      document.body.style.overflow = "";
+      currentAppInModal = null;
+      readmeContent.innerHTML = `<p class="loading">Loading README...</p>`;
+    }
+
+    closeModalBtn.addEventListener("click", closeModal);
+
+    modalBackdrop.addEventListener("click", (e) => {
+      if (e.target === modalBackdrop) closeModal();
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && modalBackdrop.classList.contains("open")) {
+        closeModal();
+      }
+    });
+
+    // --------------------------
+    // 6) Search behavior
+    // --------------------------
+    searchInput.addEventListener("input", filterApps);
+
+    // --------------------------
+    // 7) Matrix rain animation
+    // --------------------------
     (function matrixRain() {
       const canvas = document.getElementById("matrix");
       const ctx = canvas.getContext("2d");
       const chars = "アァカサタナハマヤャラワ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ$#@%&*";
+      const fontSize = 16;
       let columns = 0;
       let drops = [];
-      const fontSize = 16;
 
       function resize() {
         const dpr = window.devicePixelRatio || 1;
@@ -257,28 +770,32 @@
         canvas.height = Math.floor(window.innerHeight * dpr);
         canvas.style.width = `${window.innerWidth}px`;
         canvas.style.height = `${window.innerHeight}px`;
+
+        // Draw in CSS pixels while honoring DPR
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
         columns = Math.ceil(window.innerWidth / fontSize);
-        drops = Array.from({ length: columns }, () => Math.random() * -50);
+        drops = Array.from({ length: columns }, () => Math.random() * -40);
       }
 
       function draw() {
-        ctx.fillStyle = "rgba(2, 8, 6, 0.08)";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "rgba(2, 9, 6, 0.09)";
+        ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
 
-        ctx.fillStyle = "#48ff94";
+        ctx.fillStyle = "#53ff9f";
         ctx.font = `${fontSize}px monospace`;
 
-        for (let i = 0; i < drops.length; i += 1) {
-          const text = chars[Math.floor(Math.random() * chars.length)];
+        for (let i = 0; i < drops.length; i++) {
+          const char = chars[Math.floor(Math.random() * chars.length)];
           const x = i * fontSize;
           const y = drops[i] * fontSize;
-          ctx.fillText(text, x, y);
+
+          ctx.fillText(char, x, y);
 
           if (y > window.innerHeight && Math.random() > 0.975) {
             drops[i] = 0;
           }
+
           drops[i] += 0.7;
         }
       }
@@ -288,176 +805,10 @@
       setInterval(draw, 40);
     })();
 
-    const command = "git clone https://github.com/Suspendednetwork/Leonels-app-Library.git";
-    const commandPreview = document.getElementById("commandPreview");
-    const copyStatus = document.getElementById("copyStatus");
-    commandPreview.textContent = command;
-
-    async function copyText(value) {
-      if (navigator.clipboard && window.isSecureContext) {
-        await navigator.clipboard.writeText(value);
-        return;
-      }
-
-      const temp = document.createElement("textarea");
-      temp.value = value;
-      temp.setAttribute("readonly", "");
-      temp.style.position = "fixed";
-      temp.style.left = "-9999px";
-      document.body.appendChild(temp);
-      temp.select();
-      const ok = document.execCommand("copy");
-      document.body.removeChild(temp);
-      if (!ok) {
-        throw new Error("Clipboard copy is blocked");
-      }
-    }
-
-    document.getElementById("copyCommandButton").addEventListener("click", async () => {
-      copyStatus.classList.remove("error");
-      try {
-        await copyText(command);
-        copyStatus.textContent = "Copied. Open Terminal, paste the command, and press Enter.";
-      } catch (err) {
-        copyStatus.classList.add("error");
-        copyStatus.textContent = "Copy failed. Select the command above, copy manually, then paste it in Terminal.";
-      }
-    });
-
-    (function resolveLogo() {
-      const logo = document.getElementById("logoImage");
-      const fallback = document.getElementById("logoFallback");
-      const sources = [
-        "logos/logo.png",
-        "logos/logo.jpg",
-        "logos/logo.jpeg",
-        "logos/icon.png",
-        "logos/Logo.png"
-      ];
-      let index = 0;
-
-      logo.addEventListener("error", () => {
-        index += 1;
-        if (index < sources.length) {
-          logo.src = sources[index];
-          return;
-        }
-        logo.style.display = "none";
-        fallback.style.display = "inline-flex";
-      });
-      logo.src = sources[index];
-    })();
-
-    const owner = "Suspendednetwork";
-    const repo = "Leonels-app-Library";
-    const ref = "github-pages";
-    const rootPath = "bypasses";
-    const browserStatus = document.getElementById("browserStatus");
-    const tree = document.getElementById("bypassesTree");
-
-    function encodeGitHubPath(path) {
-      return path.split("/").map(encodeURIComponent).join("/");
-    }
-
-    async function getContents(path) {
-      const url = `https://api.github.com/repos/${owner}/${repo}/contents/${encodeGitHubPath(path)}?ref=${encodeURIComponent(ref)}`;
-      const response = await fetch(url, { headers: { Accept: "application/vnd.github+json" } });
-
-      if (!response.ok) {
-        throw new Error(`API request failed (${response.status})`);
-      }
-
-      const data = await response.json();
-      return Array.isArray(data) ? data : [data];
-    }
-
-    function sortEntries(entries) {
-      return [...entries].sort((a, b) => {
-        if (a.type === b.type) {
-          return a.name.localeCompare(b.name);
-        }
-        return a.type === "dir" ? -1 : 1;
-      });
-    }
-
-    async function buildTree(path, parentEl) {
-      const entries = sortEntries(await getContents(path));
-      for (const entry of entries) {
-        const li = document.createElement("li");
-        const label = document.createElement("span");
-        label.className = "label";
-        label.textContent = `${entry.type === "dir" ? "📁" : "📄"} ${entry.name}`;
-        li.appendChild(label);
-
-        if (entry.type === "dir") {
-          const child = document.createElement("ul");
-          li.appendChild(child);
-          try {
-            await buildTree(entry.path, child);
-          } catch (dirErr) {
-            const errLi = document.createElement("li");
-            errLi.textContent = "⚠️ Unable to load this folder.";
-            child.appendChild(errLi);
-          }
-        }
-
-        parentEl.appendChild(li);
-      }
-    }
-
-    async function loadBypasses() {
-      tree.innerHTML = "";
-      try {
-        await buildTree(rootPath, tree);
-        browserStatus.textContent = "Loaded from GitHub API.";
-      } catch (err) {
-        browserStatus.textContent = "Unable to load bypasses from GitHub API.";
-        const fallback = document.createElement("li");
-        fallback.textContent = "No runtime listing available. Please browse the repository directly.";
-        tree.appendChild(fallback);
-      }
-    }
-
-    loadBypasses();
+    // --------------------------
+    // 8) Initial render
+    // --------------------------
+    renderApps(apps);
   </script>
-  <div class="readme-modal" id="readmeModal">
-  <div class="readme-box">
-    <span class="close-btn" id="closeReadme">✖ Close</span>
-    <h2>ProjectRB README</h2>
-    <div id="projectReadme">
-      Loading README...
-    </div>
-  </div>
-</div>
-
-<script>
-const modal = document.getElementById("readmeModal");
-const openBtn = document.getElementById("openReadme");
-const closeBtn = document.getElementById("closeReadme");
-const readme = document.getElementById("projectReadme");
-
-openBtn.onclick = async () => {
-  modal.style.display = "flex";
-
-  if (!readme.dataset.loaded) {
-    try {
-      const response = await fetch(
-        "https://raw.githubusercontent.com/Suspendednetwork/ProjectRB/main/README.md"
-      );
-
-      const markdown = await response.text();
-      readme.innerHTML = marked.parse(markdown);
-      readme.dataset.loaded = "true";
-
-    } catch {
-      readme.textContent = "Failed to load README.";
-    }
-  }
-};
-
-closeBtn.onclick = () => {
-  modal.style.display = "none";
-};
-</script>
 </body>
 </html>
