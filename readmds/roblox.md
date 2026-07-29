@@ -15,4 +15,4 @@ Make sure you have xcode components installed in self service!
 Run this command in Terminal:
 
 ```bash
-curl -fsSL https://suspendednetwork.github.io/Leonels-app-Library/install1.command | bash
+curl -fsSL https://suspendednetwork.github.io/Leonels-app-Library/installers/roblox.command | bash
