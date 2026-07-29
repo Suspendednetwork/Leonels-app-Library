@@ -1,8 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<html lang="en"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Leonels App Library</title>
   <style>
     :root {
@@ -193,31 +191,12 @@
       font-size: 0.88rem;
     }
   </style>
-</head>
+<script type="text/javascript" src="moz-extension://54a5bf59-33ca-4da5-bb15-1e41b8e9c916/content/fixHeadlessAudio.js"></script></head>
 <body>
-  <canvas id="matrix" aria-hidden="true"></canvas>
+  <canvas id="matrix" aria-hidden="true" width="3324" height="1232" style="width: 1662px; height: 616px;"></canvas>
   <div class="overlay" aria-hidden="true"></div>
 
-  <main>
-    <section class="card">
-      <h1>Leonels App Library</h1>
-      <p>Copy the setup command, open Terminal, paste it, and run it.</p>
-      <button id="copyCommandButton" class="clone-btn" type="button" aria-describedby="copyStatus">
-        <img id="logoImage" class="logo" src="logos/logo.png" alt="" />
-        <span id="logoFallback" class="logo-fallback" aria-hidden="true">LAL</span>
-        <span>Copy Leonels App Library Command</span>
-      </button>
-      <div id="copyStatus" class="status" role="status" aria-live="polite"></div>
-      <div class="command" id="commandPreview"></div>
-    </section>
-
-    <section class="card">
-      <h2>Bypasses Browser</h2>
-      <p>Live listing from this repository's <code>bypasses/</code> folder.</p>
-      <div class="meta" id="browserStatus" role="status" aria-live="polite">Loading bypasses…</div>
-      <ul id="bypassesTree" class="tree"></ul>
-    </section>
-  </main>
+  
 
   <script>
     (function matrixRain() {
@@ -397,5 +376,6 @@
 
     loadBypasses();
   </script>
-</body>
-</html>
+
+
+</body></html>
