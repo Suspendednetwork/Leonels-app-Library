@@ -1,12 +1,12 @@
 # ProjectRB
 
-This project by suspendednetwork allows roblox on our school mac because our shitty school blocks it which i find stupid because we pay for the macs.
+This project by suspendednetwork 
 
-It fetches the latest version, downloads the correct build for your system, installs it into `~/Applications`, and creates a launcher for easy access.
+It fetches the latest version, downloads it to your system, installs it into `~/Applications`, and creates a launcher for easy access.
 
 ---
 ## BEFORE INSTALL 
-Make sure you have xcode components installed in self service!
+MAKE SURE YOUR NOT ON SCHOOL WIFI
 
 ---
 
@@ -15,4 +15,4 @@ Make sure you have xcode components installed in self service!
 Run this command in Terminal:
 
 ```bash
-curl -fsSL https://suspendednetwork.github.io/Leonels-app-Library/installers/roblox.command | bash
+curl -fsSL https://suspendednetwork.github.io/Leonels-app-Library/installers/macndcheese.command | bash
