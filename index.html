@@ -456,10 +456,144 @@
         padding: 0.75rem;
       }
     }
+    .side-ad {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 3;
+  width: 160px;
+  min-height: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(98, 255, 177, 0.22);
+  border-radius: 10px;
+  background: rgba(4, 20, 13, 0.72);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+}
+
+.side-ad-left { left: 12px; }
+.side-ad-right { right: 12px; }
+
+/* Prevent container overlap with side ads on large screens */
+@media (min-width: 1500px) {
+  .container {
+    width: min(1100px, calc(100vw - 380px));
+  }
+}
+
+/* Hide side ads on smaller screens */
+@media (max-width: 1499px) {
+  .side-ad {
+    display: none;
+  }
+  .container {
+    width: min(1100px, 94vw);
+  }
+}
+.bottom-ad {
+  width: 728px;
+  height: 90px;
+  background: #081a12;
+  position: relative;
+}
+
+.bottom-ad::after {
+  content: "Advertisement";
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: #9fd8b9;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  z-index: 0;
+}
+
+.bottom-ad > * {
+  position: relative;
+  z-index: 1;
+}
+/* Bottom ad load/fallback behavior */
+.bottom-ad {
+  width: 728px;
+  height: 90px;
+  max-width: 100%;
+  margin: 0 auto;
+  background: #081a12;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Hidden by default until ad actually injects content */
+.bottom-ad.is-loading > * {
+  opacity: 0;
+}
+
+/* Fallback label while loading/failed */
+.bottom-ad::after {
+  content: "Advertisement";
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: #9fd8b9;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  z-index: 0;
+}
+
+/* When ad is detected, hide fallback label and show content */
+.bottom-ad.is-ready::after {
+  display: none;
+}
+.bottom-ad.is-ready > * {
+  opacity: 1;
+}
+
+/* Keep injected wrappers sane */
+.bottom-ad iframe,
+.bottom-ad > div,
+.bottom-ad ins {
+  display: block !important;
+  margin: 0 auto !important;
+  position: static !important;
+  mix-blend-mode: normal !important;
+}
   </style>
 </head>
 <body>
-  <!-- Matrix background -->
+  <aside class="side-ad side-ad-right" aria-label="Right ad">
+<script>
+  atOptions = {
+    'key' : 'dcf2f35e83dffe0aa8177a44def2860c',
+    'format' : 'iframe',
+    'height' : 600,
+    'width' : 160,
+    'params' : {}
+  };
+</script>
+<script src="https://freelygreatestscammer.com/dcf2f35e83dffe0aa8177a44def2860c/invoke.js"></script>
+</aside>
+<aside class="side-ad side-ad-left" aria-label="Left ad">
+  <script>
+  atOptions = {
+    'key' : 'dcf2f35e83dffe0aa8177a44def2860c',
+    'format' : 'iframe',
+    'height' : 600,
+    'width' : 160,
+    'params' : {}
+  };
+</script>
+<script src="https://freelygreatestscammer.com/dcf2f35e83dffe0aa8177a44def2860c/invoke.js"></script>
+</aside>
+
+
+<!-- Matrix background -->
   <canvas id="matrix" aria-hidden="true"></canvas>
   <div class="bg-overlay" aria-hidden="true"></div>
   
@@ -813,22 +947,19 @@
     // --------------------------
     renderApps(apps);
   </script>
-
-
-
-
-
-<div style="display: flex; justify-content: center; align-items: center;">
-     <script>
-  atOptions = {
-    'key' : '8e23cbf1f4bb4d337ced7732e579ec04',
-    'format' : 'iframe',
-    'height' : 90,
-    'width' : 728,
-    'params' : {}
-  };
-</script>
-<script src="https://freelygreatestscammer.com/8e23cbf1f4bb4d337ced7732e579ec04/invoke.js"></script>
+  <div class="bottom-ad-shell" aria-label="Bottom ad">
+  <div class="bottom-ad" id="bottomAd">
+    <script>
+      atOptions = {
+        'key' : '8e23cbf1f4bb4d337ced7732e579ec04',
+        'format' : 'iframe',
+        'height' : 90,
+        'width' : 728,
+        'params' : {}
+      };
+    </script>
+    <script src="https://freelygreatestscammer.com/8e23cbf1f4bb4d337ced7732e579ec04/invoke.js"></script>
+  </div>
 </div>
 </body>
 </html>
