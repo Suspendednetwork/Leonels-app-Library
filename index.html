@@ -564,6 +564,61 @@
   position: static !important;
   mix-blend-mode: normal !important;
 }
+.adblock-notice {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  background: rgba(0, 0, 0, 0.55);
+  padding: 1rem;
+}
+.adblock-card {
+  width: min(520px, 92vw);
+  border: 1px solid rgba(98, 255, 177, 0.4);
+  background: #081a12;
+  border-radius: 12px;
+  box-shadow: 0 16px 40px rgba(0,0,0,0.45);
+  padding: 1rem;
+  color: #d8ffe9;
+}
+.adblock-card p {
+  margin: 0.6rem 0 0.9rem;
+  color: #a7d8bf;
+}
+#adblockClose {
+  border: 1px solid rgba(123, 255, 190, 0.45);
+  background: rgba(11, 70, 42, 0.95);
+  color: #e8fff2;
+  border-radius: 10px;
+  padding: 0.5rem 0.8rem;
+  font: inherit;
+  cursor: pointer;
+}
+    .ab-backdrop {
+        display: none; 
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        z-index: 99999;
+        justify-content: center;
+        align-items: center;
+        backdrop-filter: blur(5px);
+    }
+    .ab-modal {
+        background: #fff;
+        padding: 30px;
+        border-radius: 10px;
+        max-width: 400px;
+        text-align: center;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+    .ab-modal h2 { margin-top: 0; color: #e74c3c; }
+    .ab-modal p { font-size: 16px; color: #333; line-height: 1.5; }
+    .ab-btn {
+        background: #3498db; color: #fff; border: none;
+        padding: 10px 20px; border-radius: 5px; cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -960,6 +1015,14 @@
     </script>
     <script src="https://freelygreatestscammer.com/8e23cbf1f4bb4d337ced7732e579ec04/invoke.js"></script>
   </div>
+</div>
+<script src="fuckadblock.js"></script>
+<div id="adblock-overlay" class="ab-backdrop">
+    <div class="ab-modal">
+        <h2>Ad Blocker Detected</h2>
+        <p>Please turn off your adblocker. Everything is free, and this is the only way I make money.</p>
+        <button class="ab-btn" onclick="location.reload();">I have disabled it (Reload)</button>
+    </div>
 </div>
 </body>
 </html>
