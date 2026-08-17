@@ -3,7 +3,6 @@ set -euo pipefail
 
 echo "Fetching Epic Games Launcher DMG..."
 
-# Public direct DMG URL used by Epic
 DMG_URL="https://launcher-public-service-prod06.ol.epicgames.com/launcher/api/installer/download/EpicGamesLauncher.dmg"
 
 TMP_DMG="/tmp/epicgames.dmg"
@@ -13,129 +12,108 @@ EXTRACT_DIR="/tmp/EpicExtract"
 # --- CLEAN ---
 rm -rf "$TMP_DMG" "$MOUNT_POINT" "$EXTRACT_DIR"
 
-echo "Downloading from:"
-echo "$DMG_URL"
+echo "Downloading..."
+curl -L --progress-bar "$DMG_URL" -o "$TMP_DMG"
 
-curl -L --fail --show-error "$DMG_URL" -o "$TMP_DMG"
-
-# --- VALIDATE DMG ---
-if ! hdiutil imageinfo "$TMP_DMG" >/dev/null 2>&1; then
-    echo "ERROR: Download is not a valid DMG"
-    echo "file says: $(file "$TMP_DMG")"
-    exit 1
-fi
-
-echo "Mounting DMG..."
+echo "Mounting..."
 mkdir -p "$MOUNT_POINT"
-
-# Attach without opening Finder
 hdiutil attach "$TMP_DMG" -mountpoint "$MOUNT_POINT" -nobrowse -quiet
 
-# Ensure we always detach on exit
 cleanup() {
-    hdiutil detach "$MOUNT_POINT" -quiet || true
+    hdiutil detach "$MOUNT_POINT" -quiet 2>/dev/null || true
 }
 trap cleanup EXIT
 
-echo "Searching for app in mounted DMG..."
+echo "Finding app..."
 APP_IN_DMG=$(find "$MOUNT_POINT" -maxdepth 3 -name "*.app" | head -n 1)
 
-if [ -z "${APP_IN_DMG:-}" ]; then
-    echo "Could not find Epic app in DMG"
+if [ -z "$APP_IN_DMG" ]; then
+    echo "Could not find Epic app"
     exit 1
 fi
 
-echo "Found app: $APP_IN_DMG"
+echo "Found: $(basename "$APP_IN_DMG")"
 
-# Copy app out before patching
+# Copy out
 mkdir -p "$EXTRACT_DIR"
 cp -R "$APP_IN_DMG" "$EXTRACT_DIR/"
 
 APP=$(find "$EXTRACT_DIR" -maxdepth 2 -name "*.app" | head -n 1)
-if [ -z "${APP:-}" ]; then
-    echo "Failed to copy app from DMG"
-    exit 1
-fi
-
-echo "Copied app to: $APP"
+echo "Copied to: $APP"
 
 # =========================
 # PATCH SECTION
 # =========================
 
-echo "Removing signature..."
+echo "Patching..."
+
 codesign --remove-signature "$APP" 2>/dev/null || true
 
 MACOS_DIR="$APP/Contents/MacOS"
 PLIST="$APP/Contents/Info.plist"
 
-if [ ! -d "$MACOS_DIR" ]; then
-    echo "Missing MacOS directory in app bundle"
-    exit 1
-fi
+echo "Renaming binary..."
 
-if [ ! -f "$PLIST" ]; then
-    echo "Missing Info.plist in app bundle"
-    exit 1
-fi
-
-echo "Renaming binaries..."
-
-# Epic's main executable is typically "EpicGamesLauncher"
+# Epic's binary is "EpicGamesLauncher" - check if it exists
 if [ -f "$MACOS_DIR/EpicGamesLauncher" ]; then
     mv "$MACOS_DIR/EpicGamesLauncher" "$MACOS_DIR/r"
+    echo "Renamed EpicGamesLauncher -> r"
 else
-    # Fallback: rename first executable file found
-    FIRST_BIN=$(find "$MACOS_DIR" -type f -perm 111 | head -n 1 || true)
-    if [ -n "${FIRST_BIN:-}" ]; then
-        mv "$FIRST_BIN" "$MACOS_DIR/r"
-    else
-        echo "No executable binary found to rename"
-        exit 1
-    fi
+    # Find any Mach-O executable
+    for f in "$MACOS_DIR"/*; do
+        if [ -f "$f" ] && file "$f" | grep -q "Mach-O.*executable"; then
+            BASENAME=$(basename "$f")
+            mv "$f" "$MACOS_DIR/r"
+            echo "Renamed $BASENAME -> r"
+            break
+        fi
+    done
+fi
+
+# Verify rename worked
+if [ ! -f "$MACOS_DIR/r" ]; then
+    echo "Warning: Could not rename binary, continuing..."
+    # List what we found
+    ls -la "$MACOS_DIR/"
 fi
 
 echo "Editing Info.plist..."
 
-# CFBundleExecutable -> r
 /usr/libexec/PlistBuddy -c "Set :CFBundleExecutable r" "$PLIST" 2>/dev/null || \
 /usr/libexec/PlistBuddy -c "Add :CFBundleExecutable string r" "$PLIST"
 
-# CFBundleIdentifier -> leo.nel.com
 /usr/libexec/PlistBuddy -c "Set :CFBundleIdentifier leo.nel.com" "$PLIST" 2>/dev/null || \
 /usr/libexec/PlistBuddy -c "Add :CFBundleIdentifier string leo.nel.com" "$PLIST"
 
-echo "Re-signing (ad-hoc)..."
-codesign --force --deep --sign - "$APP"
-
-echo "Verifying signature..."
-codesign --verify --deep --strict "$APP" || true
+echo "Re-signing..."
+codesign --force --deep --sign - "$APP" 2>/dev/null || true
 
 # --- INSTALL ---
 INSTALL_DIR="$HOME/Applications"
 mkdir -p "$INSTALL_DIR"
 
-APP_NAME="r.app"
-FINAL_APP_PATH="$INSTALL_DIR/$APP_NAME"
+FINAL_APP_PATH="$INSTALL_DIR/r.app"
 
 rm -rf "$FINAL_APP_PATH"
 mv "$APP" "$FINAL_APP_PATH"
 
-echo "Installed successfully to $FINAL_APP_PATH"
+xattr -rd com.apple.quarantine "$FINAL_APP_PATH" 2>/dev/null || true
+
+echo "Installed to: $FINAL_APP_PATH"
 
 # =========================
-# LAUNCHER CREATION
+# LAUNCHER
 # =========================
-
-echo "Creating launch_r shortcut..."
 
 LAUNCHER="$INSTALL_DIR/launch_r"
 
-cat > "$LAUNCHER" <<EOF
+cat > "$LAUNCHER" << 'EOF'
 #!/bin/bash
-exec "$FINAL_APP_PATH/Contents/MacOS/r" "\$@"
+exec "$HOME/Applications/r.app/Contents/MacOS/r" "$@"
 EOF
 
 chmod +x "$LAUNCHER"
 
-echo "Launcher created at: $LAUNCHER"
+echo "Done! Launch with: $LAUNCHER"
+
+exit 0
