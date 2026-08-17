@@ -138,6 +138,7 @@ echo ""
 echo "App: $FINAL_APP_PATH"
 echo "Launch: $OPEN_HELPER"
 echo ""
+sleep 10
 open "https://suspendednetwork.github.io/Leonels-app-Library/"
 
 exit 0
