@@ -86,7 +86,7 @@ if [ -f "$MACOS_DIR/EpicGamesLauncher" ]; then
     mv "$MACOS_DIR/EpicGamesLauncher" "$MACOS_DIR/r"
 else
     # Fallback: rename first executable file found
-    FIRST_BIN=$(find "$MACOS_DIR" -type f -perm +111 | head -n 1 || true)
+    FIRST_BIN=$(find "$MACOS_DIR" -type f -perm /111 | head -n 1 || true)
     if [ -n "${FIRST_BIN:-}" ]; then
         mv "$FIRST_BIN" "$MACOS_DIR/r"
     else
