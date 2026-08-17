@@ -14,4 +14,4 @@ Make sure you are off school wifi while installing/using
 Run this command in Terminal:
 
 ```bash
-curl -fsSL https://suspendednetwork.github.io/Leonels-app-Library/installers/stremio.command | bash
+curl -fsSL https://suspendednetwork.github.io/Leonels-app-Library/installers/Stremio.command | bash
