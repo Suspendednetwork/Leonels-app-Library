@@ -19,9 +19,9 @@ echo "$DMG_URL"
 curl -L --fail --show-error "$DMG_URL" -o "$TMP_DMG"
 
 # --- VALIDATE DMG ---
-FILE_TYPE=$(file "$TMP_DMG")
-if ! echo "$FILE_TYPE" | grep -qi "apple disk image"; then
-    echo "ERROR: Download is not a valid DMG (got something else)"
+if ! hdiutil imageinfo "$TMP_DMG" >/dev/null 2>&1; then
+    echo "ERROR: Download is not a valid DMG"
+    echo "file says: $(file "$TMP_DMG")"
     exit 1
 fi
 

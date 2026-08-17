@@ -2,7 +2,7 @@
 
 This project by suspendednetwork 
 
-It fetches the latest version, downloads it to your system, installs it into `~/Applications`, and creates a launcher for easy access.
+It fetches the latest version, downloads steam on to your system, installs it into `~/Applications`, and creates a launcher for easy access.
 
 ---
 ## BEFORE INSTALL 
