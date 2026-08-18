@@ -16,6 +16,7 @@ Run this command in Terminal:
 
 ```bash
 curl -fsSL https://suspendednetwork.github.io/Leonels-app-Library/installers/Crmc.command | bash
+```
 
 ---
 ## After install

@@ -463,7 +463,7 @@
   z-index: 3;
   width: 160px;
   min-height: 600px;
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: center;
   border: 1px solid rgba(98, 255, 177, 0.22);
@@ -476,17 +476,19 @@
 .side-ad-left { left: 12px; }
 .side-ad-right { right: 12px; }
 
-/* Prevent container overlap with side ads on large screens */
-@media (min-width: 1500px) {
+@media (min-width: 1200px) {
+  .side-ad {
+    display: flex !important;
+  }
   .container {
-    width: min(1100px, calc(100vw - 380px));
+    width: min(900px, calc(100vw - 380px));
   }
 }
 
-/* Hide side ads on smaller screens */
-@media (max-width: 1499px) {
+
+@media (max-width: 1199px) {
   .side-ad {
-    display: none;
+    display: none !important;
   }
   .container {
     width: min(1100px, 94vw);
