@@ -4,7 +4,7 @@
 # Generic macOS App Installer 
 # ==========================================
 
-DOWNLOAD_URL=""
+DOWNLOAD_URL="https://cdn.fastly.steamstatic.com/client/installer/steam.dmg"
 APP_NAME="Steeeaaaaamm"
 
 echo "=========================================="
