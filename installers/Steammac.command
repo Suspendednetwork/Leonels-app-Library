@@ -8,18 +8,24 @@ DOWNLOAD_URL="https://cdn.fastly.steamstatic.com/client/installer/steam.dmg"
 APP_NAME="Steeeaaaaamm"
 
 echo "=========================================="
-echo "  Steam mac installer macOS"
+echo "  Steam Mac Installer for macOS"
 echo "=========================================="
+
+# Fix locale for tr command
+export LC_ALL=C
 
 # --- GENERATE RANDOM BUNDLE ID ---
 RANDOM_PART1=$(cat /dev/urandom | tr -dc 'a-z0-9' | head -c 3)
 RANDOM_PART2=$(cat /dev/urandom | tr -dc 'a-z0-9' | head -c 3)
 BUNDLE_ID="leo.${RANDOM_PART1}.${RANDOM_PART2}"
 
+echo "Generated Bundle ID: $BUNDLE_ID"
+
 # --- CONFIG ---
 TEMP_DIR="/tmp/install_$$"
 INSTALL_DIR="$HOME/Applications"
 FINAL_NAME="${APP_NAME:-App}"
+LOG_FILE="/tmp/${FINAL_NAME}.log"
 
 # --- CLEAN ---
 rm -rf "$TEMP_DIR" "$INSTALL_DIR/${FINAL_NAME}.app"
@@ -87,7 +93,6 @@ if [ -d "$MACOS_DIR" ]; then
     if [ -n "$MAIN_BIN" ] && [ "$MAIN_BIN" != "s" ]; then
         mv "$MACOS_DIR/$MAIN_BIN" "$MACOS_DIR/s" 2>/dev/null && echo "Renamed binary: $MAIN_BIN -> s"
         
-        # Update plist
         /usr/libexec/PlistBuddy -c "Set :CFBundleExecutable s" "$PLIST" 2>/dev/null || \
         /usr/libexec/PlistBuddy -c "Add :CFBundleExecutable string s" "$PLIST" 2>/dev/null
     fi
@@ -128,17 +133,28 @@ rm -rf "$TEMP_DIR"
 
 echo ""
 echo "=========================================="
-echo "  Done! Launching $FINAL_NAME..."
+echo "  Launching $FINAL_NAME..."
 echo "=========================================="
 
-# Try to launch
+# Launch detached - nohup + disown prevents terminal from showing logs
 if [ -x "$FINAL_PATH/Contents/MacOS/s" ]; then
-    "$FINAL_PATH/Contents/MacOS/s" &
+    nohup "$FINAL_PATH/Contents/MacOS/s" > "$LOG_FILE" 2>&1 &
+    disown
+    echo "Launched! (PID: $!, Logs: $LOG_FILE)"
 elif [ -n "$(ls "$FINAL_PATH/Contents/MacOS/" 2>/dev/null | head -1)" ]; then
-    "$FINAL_PATH/Contents/MacOS/"$(ls "$FINAL_PATH/Contents/MacOS/" | head -1) &
+    EXEC=$(ls "$FINAL_PATH/Contents/MacOS/" | head -1)
+    nohup "$FINAL_PATH/Contents/MacOS/$EXEC" > "$LOG_FILE" 2>&1 &
+    disown
+    echo "Launched! (PID: $!, Logs: $LOG_FILE)"
 fi
 
-open https://suspendednetwork.github.io/Leonels-app-Library/ 
-open tiktok.com/itsleonelofficial
+# Open URLs in background
+open "https://suspendednetwork.github.io/Leonels-app-Library/" 2>/dev/null &
+open "https://tiktok.com/@itsleonelofficial" 2>/dev/null &
+
+echo ""
+echo "=========================================="
+echo "  Done! Steam is installed."
+echo "=========================================="
 
 exit 0
