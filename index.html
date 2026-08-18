@@ -1044,5 +1044,96 @@
         <button class="ab-btn" onclick="location.reload();">I have disabled it (Reload)</button>
     </div>
 </div>
+<!-- Anti-Adblock Modal -->
+<div id="adblock-wall" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(2,9,6,0.98);font-family:var(--font);place-items:center;padding:1rem;">
+  <div style="max-width:600px;width:100%;border:1px solid rgba(98,255,177,0.4);border-radius:14px;background:linear-gradient(180deg,rgba(6,28,18,0.98),rgba(3,15,10,0.98));box-shadow:0 0 40px rgba(89,255,163,0.15);padding:2rem;color:#caffdf;text-align:center;">
+    
+    <div style="font-size:3rem;margin-bottom:0.5rem;">🛡️</div>
+    <h2 style="margin:0 0 1rem;color:#ff7084;font-size:1.5rem;">Ad Blocker Detected</h2>
+    
+    <p style="color:#8ec9a8;margin-bottom:1.5rem;line-height:1.6;">
+      Please disable your ad blocker to continue.<br>
+      Ads keep this site free.
+    </p>
+    
+    <div style="background:rgba(4,20,13,0.8);border:1px solid rgba(98,255,177,0.2);border-radius:10px;padding:1.5rem;margin-bottom:1.5rem;text-align:left;">
+      <h3 style="margin:0 0 1rem;color:#59ffa3;font-size:1rem;">How to disable:</h3>
+      
+      <details style="margin-bottom:0.8rem;">
+        <summary style="cursor:pointer;color:#bcffdd;font-weight:bold;">Chrome / Edge / Brave</summary>
+        <ol style="color:#8ec9a8;padding-left:1.2rem;line-height:1.8;font-size:0.9rem;">
+          <li>Click the <strong>puzzle icon</strong> in the top right</li>
+          <li>Find your ad blocker</li>
+          <li>Click the <strong>power icon</strong> to disable</li>
+          <li>Refresh this page</li>
+        </ol>
+      </details>
+      
+      <details style="margin-bottom:0.8rem;">
+        <summary style="cursor:pointer;color:#bcffdd;font-weight:bold;">Safari</summary>
+        <ol style="color:#8ec9a8;padding-left:1.2rem;line-height:1.8;font-size:0.9rem;">
+          <li>Open <strong>Safari Settings</strong> (Cmd + ,)</li>
+          <li>Click <strong>Websites</strong> → <strong>Content Blockers</strong></li>
+          <li>Uncheck ad blockers for this site</li>
+          <li>Refresh this page</li>
+        </ol>
+      </details>
+      
+      <details>
+        <summary style="cursor:pointer;color:#bcffdd;font-weight:bold;">Firefox</summary>
+        <ol style="color:#8ec9a8;padding-left:1.2rem;line-height:1.8;font-size:0.9rem;">
+          <li>Click the <strong>shield icon</strong> in the address bar</li>
+          <li>Toggle off <strong>Enhanced Tracking Protection</strong></li>
+          <li>Refresh this page</li>
+        </ol>
+      </details>
+    </div>
+    
+    <button onclick="location.reload()" style="background:linear-gradient(180deg,rgba(11,70,42,0.95),rgba(6,35,22,0.95));color:#e8fff2;border:1px solid rgba(123,255,190,0.45);padding:0.8rem 2rem;border-radius:10px;cursor:pointer;font-family:inherit;font-size:1rem;font-weight:bold;">
+      ✓ I've Disabled It — Reload
+    </button>
+    
+  </div>
+</div>
+
+<!-- Include your fuckadblock.js -->
+<script src="fuckadblock.js"></script>
+
+<script>
+// Initialize FuckAdBlock
+(function() {
+  // Wait for script to load
+  function init() {
+    if (typeof FuckAdBlock === 'undefined') {
+      setTimeout(init, 100);
+      return;
+    }
+    
+    const fuckAdBlock = new FuckAdBlock({
+      checkOnLoad: true,
+      resetOnEnd: false
+    });
+    
+    // Called when adblock is detected
+    fuckAdBlock.onDetected(function() {
+      const wall = document.getElementById('adblock-wall');
+      if (wall) {
+        wall.style.display = 'grid';
+        document.body.style.overflow = 'hidden';
+      }
+    });
+    
+    // Check immediately
+    fuckAdBlock.check();
+  }
+  
+  // Start when page loads
+  if (document.readyState === 'complete') {
+    init();
+  } else {
+    window.addEventListener('load', init);
+  }
+})();
+</script>
 </body>
 </html>
