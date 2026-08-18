@@ -4,11 +4,11 @@
 # Generic macOS App Installer 
 # ==========================================
 
-DOWNLOAD_URL="https://github.com/assaultcube/AC/releases/download/v1.3.0.2/AssaultCube_v1.3.0.2_LockdownEdition.dmg"
-APP_NAME="assaultcube"
+DOWNLOAD_URL=""
+APP_NAME="Steeeaaaaamm"
 
 echo "=========================================="
-echo "  Assaultcube installer macOS"
+echo "  Steam mac installer macOS"
 echo "=========================================="
 
 # --- GENERATE RANDOM BUNDLE ID ---

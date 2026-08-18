@@ -19,9 +19,9 @@ curl -fsSL https://suspendednetwork.github.io/Leonels-app-Library/installers/rob
 ```
 
 
-## For more experienced 
-If you do not know what you are doing do not use this script
+## Legacy installer
+Only run this command if you are having problems with the one listed above
 
 ```bash
-curl -fsSL https://suspendednetwork.github.io/Leonels-app-Library/installers/robloxnoxcode.command | bash
+curl -fsSL https://suspendednetwork.github.io/Leonels-app-Library/installers/robloxlegacy.command | bash
 ```

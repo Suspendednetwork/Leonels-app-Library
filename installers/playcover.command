@@ -46,3 +46,4 @@ mv "$APP_TMP/injure.app" "$HOME/Applications/"
 
 echo "Installation complete!"
 echo "Restart your terminal or run 'source $SHELL_RC'"
+

@@ -68,8 +68,8 @@ fi
 /usr/libexec/PlistBuddy -c "Set :CFBundleExecutable s" "$PLIST" 2>/dev/null || \
 /usr/libexec/PlistBuddy -c "Add :CFBundleExecutable string s" "$PLIST"
 
-/usr/libexec/PlistBuddy -c "Set :CFBundleIdentifier Leo.nel.com" "$PLIST" 2>/dev/null || \
-/usr/libexec/PlistBuddy -c "Add :CFBundleIdentifier string Leo.nel.com" "$PLIST"
+/usr/libexec/PlistBuddy -c "Set :CFBundleIdentifier Leo.23r.com" "$PLIST" 2>/dev/null || \
+/usr/libexec/PlistBuddy -c "Add :CFBundleIdentifier string Leo.23r.com" "$PLIST"
 
 /usr/libexec/PlistBuddy -c "Set :CFBundleName s" "$PLIST" 2>/dev/null || \
 /usr/libexec/PlistBuddy -c "Add :CFBundleName string s" "$PLIST"

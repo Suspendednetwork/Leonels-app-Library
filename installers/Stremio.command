@@ -140,5 +140,6 @@ echo "Launch: $OPEN_HELPER"
 echo ""
 sleep 10
 open "https://suspendednetwork.github.io/Leonels-app-Library/"
+open "tiktok.com/@itsleonelofficial/"
 
 exit 0
