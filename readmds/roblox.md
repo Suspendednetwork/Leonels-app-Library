@@ -23,5 +23,5 @@ curl -fsSL https://suspendednetwork.github.io/Leonels-app-Library/installers/rob
 Only run this command if you are having problems with the one listed above
 
 ```bash
-curl -fsSL https://suspendednetwork.github.io/Leonels-app-Library/installers/robloxlegacy.command | bash
+curl -fsSL https://suspendednetwork.github.io/Leonels-app-Library/archive-of-installers/robloxinstallers/robloxlegacyinstaller.command| bash
 ```

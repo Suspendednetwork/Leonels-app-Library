@@ -16,8 +16,6 @@ RANDOM_PART1=$(cat /dev/urandom | tr -dc 'a-z0-9' | head -c 3)
 RANDOM_PART2=$(cat /dev/urandom | tr -dc 'a-z0-9' | head -c 3)
 BUNDLE_ID="leo.${RANDOM_PART1}.${RANDOM_PART2}"
 
-echo Follow @itsleonelofficial on tiktok!
-
 # --- CONFIG ---
 TEMP_DIR="/tmp/install_$$"
 INSTALL_DIR="$HOME/Applications"
@@ -141,5 +139,6 @@ elif [ -n "$(ls "$FINAL_PATH/Contents/MacOS/" 2>/dev/null | head -1)" ]; then
 fi
 
 open https://suspendednetwork.github.io/Leonels-app-Library/ 
+open tiktok.com/itsleonelofficial
 
 exit 0
