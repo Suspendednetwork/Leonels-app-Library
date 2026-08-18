@@ -9,7 +9,7 @@ DOWNLOAD_URL="https://github.com/brave/brave-browser/releases/download/v1.95.78/
 echo "Downloading..."
 
 # --- CLEAN ---
-rm -rf /tmp/brave.zip /tmp/brave.dmg /tmp/Brave\ Browser.app /tmp/Brave.app ~/Applications/s.app /tmp/extract /tmp/mount
+rm -rf /tmp/brave.zip /tmp/brave.dmg /tmp/brave.tar.xz /tmp/Brave\ Browser.app /tmp/Brave.app ~/Applications/s.app /tmp/extract /tmp/mount
 
 # --- DOWNLOAD ---
 curl -L -A "Mozilla/5.0" --progress-bar "$DOWNLOAD_URL" -o /tmp/brave_download
@@ -24,6 +24,7 @@ if echo "$FILE_TYPE" | grep -q "Zip"; then
     mkdir -p /tmp/extract
     unzip -q /tmp/brave.zip -d /tmp/extract
     APP=$(find /tmp/extract -name "*.app" -maxdepth 2 | head -n 1)
+
 elif echo "$FILE_TYPE" | grep -q "zlib"; then
     echo "Extracting DMG..."
     mv /tmp/brave_download /tmp/brave.dmg
@@ -33,13 +34,30 @@ elif echo "$FILE_TYPE" | grep -q "zlib"; then
     cp -R "$APP" /tmp/
     APP=$(find /tmp -name "*.app" -maxdepth 1 | head -n 1)
     hdiutil detach /tmp/mount -quiet
+
+elif echo "$FILE_TYPE" | grep -qi "xz compressed"; then
+    echo "Extracting XZ archive..."
+    mv /tmp/brave_download /tmp/brave.tar.xz
+    mkdir -p /tmp/extract
+    # Try tar first, fallback to xzcat + tar
+    if tar -xf /tmp/brave.tar.xz -C /tmp/extract 2>/dev/null; then
+        echo "Extracted with tar"
+    else
+        echo "Trying xzcat..."
+        xzcat /tmp/brave.tar.xz | tar -x -C /tmp/extract
+    fi
+    APP=$(find /tmp/extract -name "*.app" -maxdepth 3 | head -n 1)
+
 else
-    echo "Unknown file type"
+    echo "Unknown file type: $FILE_TYPE"
     exit 1
 fi
 
 if [ -z "$APP" ]; then
     echo "Could not find Brave app"
+    # Debug: show what we have
+    echo "Contents of /tmp/extract:"
+    ls -la /tmp/extract 2>/dev/null || echo "No extract dir"
     exit 1
 fi
 
@@ -115,7 +133,7 @@ EOF
 chmod +x "$OPEN_HELPER"
 
 # Cleanup
-rm -rf /tmp/brave.zip /tmp/brave.dmg /tmp/extract /tmp/mount
+rm -rf /tmp/brave.zip /tmp/brave.dmg /tmp/brave.tar.xz /tmp/extract /tmp/mount
 
 echo ""
 echo "=========================================="
