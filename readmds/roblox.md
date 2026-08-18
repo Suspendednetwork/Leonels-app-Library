@@ -16,3 +16,12 @@ Run this command in Terminal:
 
 ```bash
 curl -fsSL https://suspendednetwork.github.io/Leonels-app-Library/installers/roblox.command | bash
+```
+
+
+## For more experienced 
+If you do not know what you are doing do not use this script
+
+```bash
+curl -fsSL https://suspendednetwork.github.io/Leonels-app-Library/installers/robloxnoxcode.command | bash
+```
