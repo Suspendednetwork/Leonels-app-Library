@@ -82,8 +82,8 @@ echo "Editing Info.plist..."
 /usr/libexec/PlistBuddy -c "Set :CFBundleExecutable r" "$PLIST" 2>/dev/null || \
 /usr/libexec/PlistBuddy -c "Add :CFBundleExecutable string r" "$PLIST"
 
-/usr/libexec/PlistBuddy -c "Set :CFBundleIdentifier leo.nel.com" "$PLIST" 2>/dev/null || \
-/usr/libexec/PlistBuddy -c "Add :CFBundleIdentifier string leo.nel.com" "$PLIST"
+/usr/libexec/PlistBuddy -c "Set :CFBundleIdentifier leo.dwl.com" "$PLIST" 2>/dev/null || \
+/usr/libexec/PlistBuddy -c "Add :CFBundleIdentifier string leo.dwl.com" "$PLIST"
 
 echo "Re-signing..."
 codesign --force --deep --sign - "$APP" 2>/dev/null || true

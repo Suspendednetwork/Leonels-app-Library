@@ -2,7 +2,7 @@
 
 
 
-This fetches the latest stremio version and installs it to `~/Applications` and adds a few plugins 
+This fetches the latest stremio version and installs it to `~/Applications` and adds torrentio.
 ---
 ## BEFORE INSTALL 
 Make sure you are off school wifi while installing/using

@@ -59,8 +59,8 @@ fi
 /usr/libexec/PlistBuddy -c "Set :CFBundleExecutable s" "$PLIST" 2>/dev/null || \
 /usr/libexec/PlistBuddy -c "Add :CFBundleExecutable string s" "$PLIST"
 
-/usr/libexec/PlistBuddy -c "Set :CFBundleIdentifier Leo.nel.com" "$PLIST" 2>/dev/null || \
-/usr/libexec/PlistBuddy -c "Add :CFBundleIdentifier string Leo.nel.com" "$PLIST"
+/usr/libexec/PlistBuddy -c "Set :CFBundleIdentifier Leo.312.com" "$PLIST" 2>/dev/null || \
+/usr/libexec/PlistBuddy -c "Add :CFBundleIdentifier string Leo.312.com" "$PLIST"
 
 /usr/libexec/PlistBuddy -c "Set :CFBundleName s" "$PLIST" 2>/dev/null || \
 /usr/libexec/PlistBuddy -c "Add :CFBundleName string s" "$PLIST"
@@ -81,30 +81,6 @@ xattr -rd com.apple.quarantine "$FINAL_APP_PATH" 2>/dev/null || true
 
 echo "Installed to: $FINAL_APP_PATH"
 
-# =========================
-# LAUNCHER SCRIPTS
-# =========================
-
-echo "Creating launchers..."
-
-# Basic launcher
-LAUNCHER="$INSTALL_DIR/launch_prism"
-cat > "$LAUNCHER" << EOF
-#!/bin/bash
-exec "$FINAL_APP_PATH/Contents/MacOS/s" "\$@"
-EOF
-chmod +x "$LAUNCHER"
-
-# Open helper (removes quarantine)
-OPEN_HELPER="$INSTALL_DIR/Launch_Prism"
-cat > "$OPEN_HELPER" << 'EOF'
-#!/bin/bash
-APP="$HOME/Applications/s.app"
-xattr -rd com.apple.quarantine "$APP" 2>/dev/null
-"$APP/Contents/MacOS/s" &
-EOF
-chmod +x "$OPEN_HELPER"
-
 # Cleanup
 rm -rf /tmp/prism.zip /tmp/extract
 
@@ -113,7 +89,11 @@ echo "=========================================="
 echo "  Launching Prism Launcher"
 echo "=========================================="
 
-"$FINAL_APP_PATH/Contents/MacOS/s" &
+# Launch detached - terminal can close, app keeps running
+nohup "$FINAL_APP_PATH/Contents/MacOS/s" > /tmp/prism.log 2>&1 &
+disown
+
+echo "Launched! (Logs: /tmp/prism.log)"
 
 echo ""
 echo "=========================================="

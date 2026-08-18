@@ -1,5 +1,4 @@
 #!/bin/bash
-# PlayCover Install Script (No Admin Required, Cleaned)
 
 set -e
 
