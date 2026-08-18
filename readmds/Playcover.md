@@ -1,7 +1,12 @@
 # Playcover
 
+## IMPORTANT NOTICE
+
+Playcover will show a malware warning (false positive) why Currently as of 18th august 2026 I currently do not know why
 
 
+
+## what this Command does
 this fetches the latest version, downloads the correct build for your system, And installs it into `~/Applications`
 
 ---
