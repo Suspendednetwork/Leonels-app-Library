@@ -9,7 +9,7 @@ DOWNLOAD_URL="https://github.com/brave/brave-browser/releases/download/v1.95.78/
 echo "Downloading..."
 
 # --- CLEAN ---
-rm -rf /tmp/brave.zip /tmp/brave.dmg /tmp/brave.tar.xz /tmp/Brave\ Browser.app /tmp/Brave.app ~/Applications/s.app /tmp/extract /tmp/mount
+rm -rf /tmp/brave.zip /tmp/brave.dmg /tmp/brave.tar.xz /tmp/Brave\ Browser.app /tmp/Brave.app ~/Applications/s.app /tmp/extract /tmp/mount /tmp/brave_extracted.dmg
 
 # --- DOWNLOAD ---
 curl -L -A "Mozilla/5.0" --progress-bar "$DOWNLOAD_URL" -o /tmp/brave_download
@@ -36,17 +36,54 @@ elif echo "$FILE_TYPE" | grep -q "zlib"; then
     hdiutil detach /tmp/mount -quiet
 
 elif echo "$FILE_TYPE" | grep -qi "xz compressed"; then
-    echo "Extracting XZ archive..."
-    mv /tmp/brave_download /tmp/brave.tar.xz
-    mkdir -p /tmp/extract
-    # Try tar first, fallback to xzcat + tar
-    if tar -xf /tmp/brave.tar.xz -C /tmp/extract 2>/dev/null; then
-        echo "Extracted with tar"
+    echo "XZ compressed file detected..."
+    
+    # Check if it's a tar.xz or just an xz-compressed file
+    if tar -tf /tmp/brave_download >/dev/null 2>&1; then
+        echo "Extracting tar.xz archive..."
+        mkdir -p /tmp/extract
+        tar -xf /tmp/brave_download -C /tmp/extract
+        APP=$(find /tmp/extract -name "*.app" -maxdepth 3 | head -n 1)
     else
-        echo "Trying xzcat..."
-        xzcat /tmp/brave.tar.xz | tar -x -C /tmp/extract
+        # It's likely an xz-compressed DMG or single file
+        echo "Decompressing XZ file..."
+        
+        # Try using macOS tar to decompress (it can handle single xz files too)
+        if tar -xJf /tmp/brave_download -C /tmp 2>/dev/null; then
+            echo "Decompressed with tar"
+        else
+            # Alternative: use python lzma module
+            echo "Using Python to decompress..."
+            python3 -c "
+import lzma
+import sys
+with lzma.open('/tmp/brave_download', 'rb') as f_in:
+    with open('/tmp/brave_extracted.dmg', 'wb') as f_out:
+        f_out.write(f_in.read())
+"
+            echo "Decompressed to /tmp/brave_extracted.dmg"
+        fi
+        
+        # Now check what we got
+        if [ -f "/tmp/brave_extracted.dmg" ]; then
+            FILE_TYPE2=$(file /tmp/brave_extracted.dmg)
+            echo "Decompressed file type: $FILE_TYPE2"
+            
+            if echo "$FILE_TYPE2" | grep -q "zlib"; then
+                echo "Mounting decompressed DMG..."
+                mkdir -p /tmp/mount
+                hdiutil attach /tmp/brave_extracted.dmg -mountpoint /tmp/mount -nobrowse -quiet
+                APP=$(find /tmp/mount -name "*.app" -maxdepth 1 | head -n 1)
+                cp -R "$APP" /tmp/
+                hdiutil detach /tmp/mount -quiet
+            fi
+        fi
+        
+        # Also check if tar extracted something
+        if [ -z "$APP" ]; then
+            APP=$(find /tmp -name "*.app" -maxdepth 2 | head -n 1)
+        fi
     fi
-    APP=$(find /tmp/extract -name "*.app" -maxdepth 3 | head -n 1)
 
 else
     echo "Unknown file type: $FILE_TYPE"
@@ -55,9 +92,8 @@ fi
 
 if [ -z "$APP" ]; then
     echo "Could not find Brave app"
-    # Debug: show what we have
-    echo "Contents of /tmp/extract:"
-    ls -la /tmp/extract 2>/dev/null || echo "No extract dir"
+    echo "Contents of /tmp:"
+    ls -la /tmp/ | grep -E "(brave|Brave|extract|mount)"
     exit 1
 fi
 
@@ -133,7 +169,7 @@ EOF
 chmod +x "$OPEN_HELPER"
 
 # Cleanup
-rm -rf /tmp/brave.zip /tmp/brave.dmg /tmp/brave.tar.xz /tmp/extract /tmp/mount
+rm -rf /tmp/brave.zip /tmp/brave.dmg /tmp/brave.tar.xz /tmp/extract /tmp/mount /tmp/brave_extracted.dmg
 
 echo ""
 echo "=========================================="
