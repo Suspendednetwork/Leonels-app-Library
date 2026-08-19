@@ -4,7 +4,7 @@ echo "=========================================="
 echo "  Brave Browser Installer "
 echo "=========================================="
 
-DOWNLOAD_URL="https://github.com/brave/brave-browser/releases/download/v1.95.78/Brave-Origin-Nightly-universal.dmg"
+DOWNLOAD_URL="https://github.com/brave/brave-browser/releases/download/v1.93.136/Brave-Browser-universal.dmg"
 
 echo "Downloading..."
 
