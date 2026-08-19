@@ -1,10 +1,10 @@
 # spotify
 
-gets the latest version of Spotify, downloads Spotify, installs it into `~/Applications`.
+gets the latest version of Spicetify, downloads Spictify, installs it into `~/Applications`.
 
 ---
 ## BEFORE INSTALL 
-it is best to be off school wifi while installing.
+HAVE SPOTIFY INSTALLED BEFORE RUNNING
 
 ---
 

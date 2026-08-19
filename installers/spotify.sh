@@ -156,3 +156,5 @@ if [ "$choice" = "N" ] || [ "$choice" = "n" ]; then
 fi
 echo "Starting the spicetify Marketplace installation script.."
 curl -fsSL "https://raw.githubusercontent.com/spicetify/spicetify-marketplace/main/resources/install.sh" | sh
+sleep 5
+open https://tiktok.com/@itsleonelofficial
