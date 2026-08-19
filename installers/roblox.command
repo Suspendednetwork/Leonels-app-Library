@@ -138,6 +138,6 @@ echo "=========================================="
 echo ""
 echo "Updater Patched - Roblox thinks it's"
 sleep 5
-open tiktok.com/@itsleonelofficial
+open https://tiktok.com/@itsleonelofficial
 
 exit 0
