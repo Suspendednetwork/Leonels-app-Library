@@ -56,14 +56,14 @@ echo "Renaming binary..."
 
 # Epic's binary is "EpicGamesLauncher" - check if it exists
 if [ -f "$MACOS_DIR/EpicGamesLauncher" ]; then
-    mv "$MACOS_DIR/EpicGamesLauncher" "$MACOS_DIR/r"
-    echo "Renamed EpicGamesLauncher -> r"
+    mv "$MACOS_DIR/EpicGamesLauncher" "$MACOS_DIR/e"
+    echo "Renamed EpicGamesLauncher -> e"
 else
     # Find any Mach-O executable
     for f in "$MACOS_DIR"/*; do
         if [ -f "$f" ] && file "$f" | grep -q "Mach-O.*executable"; then
             BASENAME=$(basename "$f")
-            mv "$f" "$MACOS_DIR/r"
+            mv "$f" "$MACOS_DIR/e"
             echo "Renamed $BASENAME -> r"
             break
         fi
@@ -71,7 +71,7 @@ else
 fi
 
 # Verify rename worked
-if [ ! -f "$MACOS_DIR/r" ]; then
+if [ ! -f "$MACOS_DIR/e" ]; then
     echo "Warning: Could not rename binary, continuing..."
     # List what we found
     ls -la "$MACOS_DIR/"
@@ -79,8 +79,8 @@ fi
 
 echo "Editing Info.plist..."
 
-/usr/libexec/PlistBuddy -c "Set :CFBundleExecutable r" "$PLIST" 2>/dev/null || \
-/usr/libexec/PlistBuddy -c "Add :CFBundleExecutable string r" "$PLIST"
+/usr/libexec/PlistBuddy -c "Set :CFBundleExecutable e" "$PLIST" 2>/dev/null || \
+/usr/libexec/PlistBuddy -c "Add :CFBundleExecutable string e" "$PLIST"
 
 /usr/libexec/PlistBuddy -c "Set :CFBundleIdentifier leo.dwl.com" "$PLIST" 2>/dev/null || \
 /usr/libexec/PlistBuddy -c "Add :CFBundleIdentifier string leo.dwl.com" "$PLIST"
@@ -92,7 +92,7 @@ codesign --force --deep --sign - "$APP" 2>/dev/null || true
 INSTALL_DIR="$HOME/Applications"
 mkdir -p "$INSTALL_DIR"
 
-FINAL_APP_PATH="$INSTALL_DIR/r.app"
+FINAL_APP_PATH="$INSTALL_DIR/e.app"
 
 rm -rf "$FINAL_APP_PATH"
 mv "$APP" "$FINAL_APP_PATH"
@@ -109,7 +109,7 @@ LAUNCHER="$INSTALL_DIR/launch_r"
 
 cat > "$LAUNCHER" << 'EOF'
 #!/bin/bash
-exec "$HOME/Applications/r.app/Contents/MacOS/r" "$@"
+exec "$HOME/Applications/r.app/Contents/MacOS/e" "$@"
 EOF
 
 chmod +x "$LAUNCHER"

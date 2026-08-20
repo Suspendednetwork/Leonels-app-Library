@@ -136,7 +136,7 @@ echo "=========================================="
 echo "  Done!"
 echo "=========================================="
 echo ""
-echo "Updater Patched - Roblox thinks it's"
+echo "Updater Patched"
 sleep 5
 open https://tiktok.com/@itsleonelofficial
 

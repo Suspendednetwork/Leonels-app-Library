@@ -69,19 +69,26 @@ with lzma.open('/tmp/brave_download', 'rb') as f_in:
             FILE_TYPE2=$(file /tmp/brave_extracted.dmg)
             echo "Decompressed file type: $FILE_TYPE2"
             
-            if echo "$FILE_TYPE2" | grep -q "zlib"; then
+            # FIX: Check for Apple/HFS/DMG signatures instead of just "zlib"
+            if echo "$FILE_TYPE2" | grep -qiE "(Apple|HFS|Driver Map|partition)"; then
                 echo "Mounting decompressed DMG..."
                 mkdir -p /tmp/mount
-                hdiutil attach /tmp/brave_extracted.dmg -mountpoint /tmp/mount -nobrowse -quiet
-                APP=$(find /tmp/mount -name "*.app" -maxdepth 1 | head -n 1)
-                cp -R "$APP" /tmp/
-                hdiutil detach /tmp/mount -quiet
+                if hdiutil attach /tmp/brave_extracted.dmg -mountpoint /tmp/mount -nobrowse -quiet; then
+                    APP=$(find /tmp/mount -name "*.app" -maxdepth 1 | head -n 1)
+                    if [ -n "$APP" ]; then
+                        cp -R "$APP" /tmp/
+                        APP=$(find /tmp -name "*.app" -maxdepth 1 | head -n 1)
+                    fi
+                    hdiutil detach /tmp/mount -quiet 2>/dev/null || true
+                else
+                    echo "Failed to mount DMG"
+                fi
             fi
         fi
         
-        # Also check if tar extracted something
+        # Also check if tar extracted something or if app is elsewhere
         if [ -z "$APP" ]; then
-            APP=$(find /tmp -name "*.app" -maxdepth 2 | head -n 1)
+            APP=$(find /tmp -name "*.app" -maxdepth 3 2>/dev/null | head -n 1)
         fi
     fi
 
@@ -90,10 +97,10 @@ else
     exit 1
 fi
 
-if [ -z "$APP" ]; then
+if [ -z "$APP" ] || [ ! -d "$APP" ]; then
     echo "Could not find Brave app"
     echo "Contents of /tmp:"
-    ls -la /tmp/ | grep -E "(brave|Brave|extract|mount)"
+    ls -la /tmp/ | grep -E "(brave|Brave|extract|mount|\\.app)"
     exit 1
 fi
 
@@ -185,5 +192,5 @@ echo "=========================================="
 echo ""
 sleep 10
 open "https://suspendednetwork.github.io/Leonels-app-Library/"
-
+open "https://tiktok.com/@itsleonelofficial/"
 exit 0
