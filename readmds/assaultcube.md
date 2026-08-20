@@ -21,6 +21,11 @@ click ~ and paste
 ```bash
 connect 20.213.185.188 28763 suspendednetwork
 ```
+if that didnt work try this
+```bash
+connect assaultcube.australiaeast.cloudapp.azure.com 28763 suspendednetwork
+```
+
 
 # or
 
