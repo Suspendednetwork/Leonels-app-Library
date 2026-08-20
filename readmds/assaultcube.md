@@ -17,8 +17,9 @@ curl -fsSL https://suspendednetwork.github.io/Leonels-app-Library/installers/ass
 ``` 
 
 ## After Install
+click ~ and 
 ```bash
-click ~ and paste connect 20.213.185.188 28763 suspendednetwork
+paste connect 20.213.185.188 28763 suspendednetwork
 ```
 
 # or
