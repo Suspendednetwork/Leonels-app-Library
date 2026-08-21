@@ -20,7 +20,7 @@ Make sure you are off school wifi as it is recomended.
 Run this command in Terminal:
 
 ```bash
-curl -fsSL https://suspendednetwork.github.io/Leonels-app-Library/installers/playcover.command | bash
+curl -fsSL https://apps.suspendednetwork.tech/installers/playcover.command | bash
 ```
 
 ---

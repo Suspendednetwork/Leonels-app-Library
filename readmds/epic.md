@@ -15,4 +15,4 @@ Make sure you have xcode components installed in self service! AND you are off s
 Run this command in Terminal:
 
 ```bash
-curl -fsSL https://suspendednetwork.github.io/Leonels-app-Library/installers/epic.command | bash
+curl -fsSL https://apps.suspendednetwork.tech/installers/epic.command | bash

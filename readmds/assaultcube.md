@@ -13,7 +13,7 @@ it is best to be off school wifi while installing.
 Run this command in Terminal:
 
 ```bash
-curl -fsSL https://suspendednetwork.github.io/Leonels-app-Library/installers/assaultcube.command | bash
+curl -fsSL https://apps.suspendednetwork.tech/installers/assaultcube.command | bash
 ``` 
 
 ## After Install

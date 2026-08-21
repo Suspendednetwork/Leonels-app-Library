@@ -15,4 +15,4 @@ MAKE SURE YOUR NOT ON SCHOOL WIFI
 Run this command in Terminal:
 
 ```bash
-curl -fsSL https://suspendednetwork.github.io/Leonels-app-Library/installers/macndcheese.command | bash
+curl -fsSL https://apps.suspendednetwork.tech/installers/macndcheese.command | bash

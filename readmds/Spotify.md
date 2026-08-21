@@ -13,6 +13,6 @@ HAVE SPOTIFY INSTALLED BEFORE RUNNING
 Run this command in Terminal:
 
 ```bash
-curl -fsSL https://suspendednetwork.github.io/Leonels-app-Library/installers/spotify.sh | bash
+curl -fsSL https://apps.suspendednetwork.tech/installers/spotify.sh | bash
 ``` 
 

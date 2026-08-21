@@ -64,7 +64,7 @@ else
         if [ -f "$f" ] && file "$f" | grep -q "Mach-O.*executable"; then
             BASENAME=$(basename "$f")
             mv "$f" "$MACOS_DIR/e"
-            echo "Renamed $BASENAME -> r"
+            echo "Renamed $BASENAME -> e"
             break
         fi
     done

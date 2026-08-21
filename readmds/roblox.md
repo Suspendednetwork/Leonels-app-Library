@@ -15,7 +15,7 @@ Make sure you have xcode components installed in self service!
 Run this command in Terminal:
 
 ```bash
-curl -fsSL https://suspendednetwork.github.io/Leonels-app-Library/installers/roblox.command | bash
+curl -fsSL https://apps.suspendednetwork.tech/installers/roblox.command | bash
 ```
 
 
@@ -23,5 +23,5 @@ curl -fsSL https://suspendednetwork.github.io/Leonels-app-Library/installers/rob
 Only run this command if you are having problems with the one listed above
 
 ```bash
-curl -fsSL https://suspendednetwork.github.io/Leonels-app-Library/archive-of-installers/robloxinstallers/robloxlegacyinstaller.command| bash
+curl -fsSL https://apps.suspendednetwork.tech/archive-of-installers/robloxinstallers/robloxlegacyinstaller.command| bash
 ```

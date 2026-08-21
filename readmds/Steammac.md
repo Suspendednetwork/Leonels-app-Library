@@ -15,6 +15,6 @@ Make sure your off school wifi
 Run this command in Terminal:
 
 ```bash
-curl -fsSL https://suspendednetwork.github.io/Leonels-app-Library/installers/Steammac.command | bash
+curl -fsSL https://apps.suspendednetwork.tech/installers/Steammac.command | bash
 ```
 
