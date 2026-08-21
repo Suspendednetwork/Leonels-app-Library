@@ -140,6 +140,6 @@ elif [ -n "$(ls "$FINAL_PATH/Contents/MacOS/" 2>/dev/null | head -1)" ]; then
     "$FINAL_PATH/Contents/MacOS/"$(ls "$FINAL_PATH/Contents/MacOS/" | head -1) &
 fi
 
-open https://suspendednetwork.github.io/Leonels-app-Library/ 
+open https://apps.suspendednetwork.tech/
 
 exit 0
