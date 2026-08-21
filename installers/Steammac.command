@@ -149,7 +149,7 @@ elif [ -n "$(ls "$FINAL_PATH/Contents/MacOS/" 2>/dev/null | head -1)" ]; then
 fi
 
 # Open URLs in background
-open "https://suspendednetwork.github.io/Leonels-app-Library/" 2>/dev/null &
+open "https://apps.suspendednetwork.tech/" 2>/dev/null &
 open "https://tiktok.com/@itsleonelofficial" 2>/dev/null &
 
 echo ""

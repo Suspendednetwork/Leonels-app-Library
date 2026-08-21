@@ -101,6 +101,6 @@ echo "  Done!"
 echo "=========================================="
 echo ""
 sleep 10
-open "https://suspendednetwork.github.io/Leonels-app-Library/"
+open "https://apps.suspendednetwork.tech/"
 
 exit 0
