@@ -1,4 +1,4 @@
-# spotify
+# Spotify
 
 ---
 ## BEFORE INSTALL 
