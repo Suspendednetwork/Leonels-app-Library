@@ -11,11 +11,11 @@ Make sure you have xcode components installed in self service! AND you are off s
 
 Run this command in terminal
 ```bash
-curl -fsSL https://apps.suspendednetwork.tech/epicgames.command | bash
+curl -fsSL https://apps.suspendednetwork.tech/installers/epicgames.command | bash
 ```
 Once that command finishes it will show epic games launcher on the dock, its named microsoft edge for bypassing reasons, right click it, go to options, and click on “show in finder”. Once thats done run it in finder, the launcher will start installing. Once the installer finishes and the main Epic Games Launcher has a logo instead of a white pic with a cross, right click on the epic games logo thats in the dock while holding the option key and click “force quit”. If force quit isnt there and instead it says quit then hold option. There should be an app named Epic Games Launcher in the finder window with the epic games logo. If there isnt a logo on the launcher then redo it. If the logo is there then run this command: 
 ```bash
-curl -fsSL https://apps.suspendednetwork.tech/epicgames2.command | bash
+curl -fsSL https://apps.suspendednetwork.tech/installers/epicgames2.command | bash
 ```
 
 Once that command runs, make sure to name the launcher something and then once it finishes you can open the launcher and you are done. You can also delete the Microsoft Edge version installed when running the first command if it didnt delete by itself (it should delete by itself but if it doesnt then you can delete it once the launcher 100% works).

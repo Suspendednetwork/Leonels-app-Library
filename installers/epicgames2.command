@@ -73,4 +73,5 @@ codesign --force --deep --sign - "$FINAL_PATH" 2>/dev/null
 UPDATED_PLIST="$FINAL_PATH/Contents/Info.plist"
 plutil -replace CFBundleExecutable -string "$CUSTOM_NAME" "$UPDATED_PLIST"
 
-echo "Done. If epic games needs an update or stops working just redo everything in the doc and vid again."
+echo "Done. If epic games needs an update go to apps.suspendednetwork.tech"
+open "https://apps.suspendednetwork.tech/"
