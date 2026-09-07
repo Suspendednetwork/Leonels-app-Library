@@ -2,6 +2,6 @@
 
 what is leonels app library?
 
-its a project intended directly to bypass jamf restrictions. 
+it is a project that intends no harm and is used to just have fun 
 
-lol okay done
+happy hacking everyone!
