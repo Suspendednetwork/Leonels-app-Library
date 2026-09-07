@@ -19,9 +19,3 @@ curl -fsSL https://apps.suspendednetwork.tech/installers/roblox.command | bash
 ```
 
 
-## Legacy installer
-Only run this command if you are having problems with the one listed above
-
-```bash
-curl -fsSL https://apps.suspendednetwork.tech/archive-of-installers/robloxinstallers/robloxlegacyinstaller.command| bash
-```
