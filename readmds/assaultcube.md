@@ -19,3 +19,7 @@ curl -fsSL https://apps.suspendednetwork.tech/installers/assaultcube.command | b
 ## After Install
 
 Host a server for your friends using the server tab on the launch and then to share the ip with your friends click join a lan game on your device and it shows a number something like 192.168.0.213 for example you need to copy that number and enter it in the direct connect option on your friends computers
+
+## how to open terminal
+
+first click command + space then search terminal. After it pops up hit enter

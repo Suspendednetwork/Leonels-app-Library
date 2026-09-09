@@ -27,3 +27,7 @@ If the epic games launcher ever stops opening or doesnt work then it means it ne
 If it comes up with a window to install python3 then just install it (it shouldnt come up but if it does just do it)
 
 Shout out to James for the help! 
+
+## how to open terminal
+
+first click command + space then search terminal. After it pops up hit enter
