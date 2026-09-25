@@ -865,5 +865,69 @@
   </div>
 </div>
 
+  <script>
+    // Adsterra popunder placeholder: paste ONLY the official Adsterra popunder script URL/key provided for this site.
+    // Keep policy-approved Adsterra code here; do not guess or hard-code unknown publisher credentials.
+    (function initAdsterraPopunder() {
+      const ADSTERRA_POPUNDER_SCRIPT_URL = "";
+      const ADSTERRA_SESSION_KEY = "adsterra_popunder_initialized_v1";
+      const userEvents = ["pointerdown", "click", "touchstart"];
+      let listenersAttached = false;
+
+      function removeListeners() {
+        if (!listenersAttached) return;
+        userEvents.forEach((eventName) => {
+          document.removeEventListener(eventName, handleFirstUserAction, true);
+        });
+        listenersAttached = false;
+      }
+
+      function isConfiguredUrl(url) {
+        return typeof url === "string" && url.trim() !== "";
+      }
+
+      function hasInitializedInSession() {
+        try {
+          return window.sessionStorage.getItem(ADSTERRA_SESSION_KEY) === "1";
+        } catch (_) {
+          return false;
+        }
+      }
+
+      function markInitializedInSession() {
+        try {
+          window.sessionStorage.setItem(ADSTERRA_SESSION_KEY, "1");
+        } catch (_) {}
+      }
+
+      function injectPopunderScript(url) {
+        const script = document.createElement("script");
+        script.async = true;
+        script.src = url;
+        (document.body || document.documentElement).appendChild(script);
+      }
+
+      function handleFirstUserAction() {
+        removeListeners();
+
+        if (hasInitializedInSession()) return;
+
+        const configuredUrl = ADSTERRA_POPUNDER_SCRIPT_URL.trim();
+        if (!isConfiguredUrl(configuredUrl)) return;
+
+        markInitializedInSession();
+        injectPopunderScript(configuredUrl);
+      }
+
+      if (!isConfiguredUrl(ADSTERRA_POPUNDER_SCRIPT_URL)) return;
+      if (hasInitializedInSession()) return;
+
+      userEvents.forEach((eventName) => {
+        document.addEventListener(eventName, handleFirstUserAction, { capture: true, passive: true });
+      });
+      listenersAttached = true;
+    })();
+  </script>
+
 </body>
 </html>
