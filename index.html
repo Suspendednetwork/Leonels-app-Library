@@ -368,83 +368,6 @@
       padding: 0;
     }
 
-    /* Side ads + responsive behavior */
-    .side-ad {
-      position: fixed;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 3;
-      width: 160px;
-      min-height: 600px;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      background: var(--panel);
-      overflow: hidden;
-    }
-    .side-ad-left { left: 12px; }
-    .side-ad-right { right: 12px; }
-
-    @media (min-width: 1200px) {
-      .side-ad { display: flex !important; }
-      .container { width: min(900px, calc(100vw - 380px)); }
-    }
-
-    @media (max-width: 1199px) {
-      .side-ad { display: none !important; }
-      .container { width: min(1100px, 94vw); }
-    }
-
-    /* Bottom ad */
-    .bottom-ad-shell { margin-top: 1rem; }
-
-    .bottom-ad {
-      width: 728px;
-      height: 90px;
-      max-width: 100%;
-      margin: 0 auto;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      background: var(--panel);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .bottom-ad::after {
-      content: "Advertisement";
-      position: absolute;
-      inset: 0;
-      display: grid;
-      place-items: center;
-      color: var(--muted);
-      font-size: 12px;
-      letter-spacing: 0.08em;
-      z-index: 0;
-    }
-
-    .bottom-ad > * {
-      position: relative;
-      z-index: 1;
-    }
-
-    .bottom-ad.is-loading > * { opacity: 0; }
-    .bottom-ad.is-ready::after { display: none; }
-    .bottom-ad.is-ready > * { opacity: 1; }
-
-    .bottom-ad iframe,
-    .bottom-ad > div,
-    .bottom-ad ins {
-      display: block !important;
-      margin: 0 auto !important;
-      position: static !important;
-      mix-blend-mode: normal !important;
-    }
-
     @media (max-width: 580px) {
       .container { width: 95vw; }
       .modal-head { padding: 0.8rem; }
@@ -453,30 +376,7 @@
   </style>
 </head>
 <body>
-  <aside class="side-ad side-ad-right" aria-label="Right ad">
-<script>
-  atOptions = {
-    'key' : 'dcf2f35e83dffe0aa8177a44def2860c',
-    'format' : 'iframe',
-    'height' : 600,
-    'width' : 160,
-    'params' : {}
-  };
-</script>
-<script src="https://freelygreatestscammer.com/dcf2f35e83dffe0aa8177a44def2860c/invoke.js"></script>
-</aside>
-<aside class="side-ad side-ad-left" aria-label="Left ad">
-  <script>
-  atOptions = {
-    'key' : 'dcf2f35e83dffe0aa8177a44def2860c',
-    'format' : 'iframe',
-    'height' : 600,
-    'width' : 160,
-    'params' : {}
-  };
-</script>
-<script src="https://freelygreatestscammer.com/dcf2f35e83dffe0aa8177a44def2860c/invoke.js"></script>
-</aside>
+  <!-- Removed third-party ad scripts that could navigate visitors away from this site. -->
 
 
 <!-- Matrix background -->
@@ -850,20 +750,6 @@
     // --------------------------
     renderApps(apps);
   </script>
-  <div class="bottom-ad-shell" aria-label="Bottom ad">
-  <div class="bottom-ad" id="bottomAd">
-    <script>
-      atOptions = {
-        'key' : '8e23cbf1f4bb4d337ced7732e579ec04',
-        'format' : 'iframe',
-        'height' : 90,
-        'width' : 728,
-        'params' : {}
-      };
-    </script>
-    <script src="https://freelygreatestscammer.com/8e23cbf1f4bb4d337ced7732e579ec04/invoke.js"></script>
-  </div>
-</div>
 
 </body>
 </html>
