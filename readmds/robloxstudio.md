@@ -1,4 +1,4 @@
-## roblox studio
+## Roblox studio
 
 It fetches the latest version, downloads the correct build for your system, installs it into `~/Applications`.
 
@@ -16,6 +16,6 @@ Run this command in Terminal:
 curl -fsSL https://apps.suspendednetwork.tech/installers/robloxstudio.command | bash
 ```
 
-## how to open terminal
+## How to open terminal
 
 first click command + space then search terminal. After it pops up hit enter
