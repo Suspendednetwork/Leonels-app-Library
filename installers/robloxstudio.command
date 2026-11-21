@@ -132,6 +132,6 @@ echo "=========================================="
 echo ""
 echo "Updater Patched"
 sleep 5
-open https://tiktok.com/@itsleonelofficial
+open "https://tiktok.com/@itsleonelofficial"
 
 exit 0
