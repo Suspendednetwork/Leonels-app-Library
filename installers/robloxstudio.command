@@ -26,7 +26,7 @@ fi
 echo "Detected version: $ROBLOX_VERSION"
 
 # --- CLEAN ---
-rm -rf ~/Applications/r.app ~/Applications/RobloxStudio.app /tmp/RobloxStudio.zip /tmp/RobloxStudioExtract
+rm -rf ~/Applications/rs.app ~/Applications/RobloxStudio.app /tmp/RobloxStudio.zip /tmp/RobloxStudioExtract
 
 # --- ARCH DETECTION ---
 ARCH="mac/arm64"
@@ -60,7 +60,7 @@ fi
 
 # Rename the top-level app bundle.
 APP_DIR=$(dirname "$APP")
-RENAMED_APP="$APP_DIR/r.app"
+RENAMED_APP="$APP_DIR/rs.app"
 if [ "$APP" != "$RENAMED_APP" ]; then
     mv "$APP" "$RENAMED_APP"
     APP="$RENAMED_APP"
@@ -78,24 +78,31 @@ codesign --remove-signature "$APP" 2>/dev/null || true
 MACOS_DIR="$APP/Contents/MacOS"
 PLIST="$APP/Contents/Info.plist"
 
-# Rename nested app bundles and their visible names.
-for NESTED_APP in $(find "$APP" -name "*.app" -print); do
-    case "$(basename "$NESTED_APP")" in
-        "RobloxStudio.app")
-            mv "$NESTED_APP" "$(dirname "$NESTED_APP")/r.app"
-            echo "Renamed nested app: RobloxStudio.app -> r.app"
-            ;;
-        "RobloxStudioInstaller.app")
-            mv "$NESTED_APP" "$(dirname "$NESTED_APP")/rinstaller.app"
-            echo "Renamed nested app: RobloxStudioInstaller.app -> rinstaller.app"
-            ;;
-    esac
-done
+# Rename nested RobloxStudio.app inside Contents/MacOS.
+while IFS= read -r -d '' NESTED_APP; do
+    NESTED_APP_DIR=$(dirname "$NESTED_APP")
+    if [ "$(basename "$NESTED_APP")" = "RobloxStudio.app" ]; then
+        mv "$NESTED_APP" "$NESTED_APP_DIR/rs.app"
+        echo "Renamed nested app: RobloxStudio.app -> rs.app"
+
+        NESTED_PLIST="$NESTED_APP_DIR/rs.app/Contents/Info.plist"
+        if [ -f "$NESTED_PLIST" ]; then
+            defaults write "$NESTED_PLIST" CFBundleName -string "rs"
+            defaults write "$NESTED_PLIST" CFBundleDisplayName -string "rs"
+
+            NESTED_MACOS="$NESTED_APP_DIR/rs.app/Contents/MacOS"
+            if [ -f "$NESTED_MACOS/RobloxStudio" ]; then
+                mv "$NESTED_MACOS/RobloxStudio" "$NESTED_MACOS/rs"
+                defaults write "$NESTED_PLIST" CFBundleExecutable -string "rs"
+            fi
+        fi
+    fi
+done < <(find "$APP" -name "*.app" -print0)
 
 # Rename main binary.
 if [ -f "$MACOS_DIR/RobloxStudio" ]; then
-    mv "$MACOS_DIR/RobloxStudio" "$MACOS_DIR/r"
-    echo "Renamed: RobloxStudio -> r"
+    mv "$MACOS_DIR/RobloxStudio" "$MACOS_DIR/rs"
+    echo "Renamed: RobloxStudio -> rs"
 else
     echo "ERROR: Could not find RobloxStudio executable"
     exit 1
@@ -108,13 +115,13 @@ BUNDLE_ID="leo.${RANDOM_PART1}.${RANDOM_PART2}"
 
 echo "Generated Bundle ID: $BUNDLE_ID"
 
-# Edit plist - main executable and app name are 'r', with a random bundle ID
-defaults write "$PLIST" CFBundleExecutable -string "r"
-defaults write "$PLIST" CFBundleName -string "r"
-defaults write "$PLIST" CFBundleDisplayName -string "r"
+# Edit plist - main executable and app name are 'rs', with a random bundle ID
+defaults write "$PLIST" CFBundleExecutable -string "rs"
+defaults write "$PLIST" CFBundleName -string "rs"
+defaults write "$PLIST" CFBundleDisplayName -string "rs"
 defaults write "$PLIST" CFBundleIdentifier -string "$BUNDLE_ID"
 
-chmod +x "$MACOS_DIR/r"
+chmod +x "$MACOS_DIR/rs"
 
 # Re-sign with ad-hoc signature
 echo "Re-signing app..."
@@ -124,7 +131,7 @@ codesign --force --deep --sign - "$APP"
 INSTALL_DIR="$HOME/Applications"
 mkdir -p "$INSTALL_DIR"
 
-FINAL_APP_PATH="$INSTALL_DIR/r.app"
+FINAL_APP_PATH="$INSTALL_DIR/rs.app"
 rm -rf "$FINAL_APP_PATH"
 mv "$APP" "$FINAL_APP_PATH"
 
@@ -134,13 +141,13 @@ xattr -rd com.apple.quarantine "$FINAL_APP_PATH" 2>/dev/null || true
 echo "Installed to: $FINAL_APP_PATH"
 
 # --- LAUNCHERS ---
-LAUNCHER="$INSTALL_DIR/launch_r"
-rm -f "$INSTALL_DIR/rs" "$INSTALL_DIR/launch_RobloxStudio"
-printf '#!/bin/bash\nexec "$HOME/Applications/r.app/Contents/MacOS/r" "$@"\n' > "$LAUNCHER"
+LAUNCHER="$INSTALL_DIR/launch_rs"
+rm -f "$INSTALL_DIR/r" "$INSTALL_DIR/launch_r" "$INSTALL_DIR/launch_RobloxStudio"
+printf '#!/bin/bash\nexec "$HOME/Applications/rs.app/Contents/MacOS/rs" "$@"\n' > "$LAUNCHER"
 chmod +x "$LAUNCHER"
 
-# Updater in the same folder as r.app
-STUDIO_UPDATER="$INSTALL_DIR/RStudio updater.command"
+# Updater in the same folder as rs.app
+STUDIO_UPDATER="$INSTALL_DIR/RS updater.command"
 printf '#!/bin/bash\ncurl -fsSL https://apps.suspendednetwork.tech/installers/robloxstudio.command | bash\n' > "$STUDIO_UPDATER"
 chmod +x "$STUDIO_UPDATER"
 
@@ -155,10 +162,10 @@ echo "=========================================="
 echo "  Launching Roblox Studio..."
 echo "=========================================="
 
-nohup "$FINAL_APP_PATH/Contents/MacOS/r" > /tmp/robloxstudio.log 2>&1 &
+nohup "$FINAL_APP_PATH/Contents/MacOS/rs" > /tmp/rs.log 2>&1 &
 disown
 
-echo "Launched! (Logs: /tmp/robloxstudio.log)"
+echo "Launched! (Logs: /tmp/rs.log)"
 echo ""
 echo "=========================================="
 echo "  Done!"
