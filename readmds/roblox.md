@@ -6,7 +6,7 @@ It fetches the latest version, downloads the correct build for your system, inst
 
 ## NOTICE
 If your getting this
-<img src="https://raw.githubusercontent.com/Suspendednetwork/Leonels-app-Library/refs/heads/github-pages/Readme-images/update-required.png" width="300" alt="Example">
+<img src="https://raw.githubusercontent.com/Suspendednetwork/Leonels-app-Library/refs/heads/github-pages/Readme-images/Screenshot%202026-11-21%20164006.png" width="300" alt="Example">
 Launch your game from roblox.com. Still having trouble? Dm me.
 
 ---
