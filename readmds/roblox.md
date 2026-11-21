@@ -8,7 +8,8 @@ It fetches the latest version, downloads the correct build for your system, inst
 If your getting this Launch your game from roblox.com. Still having trouble? Dm me.
 
 
-<img src="https://raw.githubusercontent.com/Suspendednetwork/Leonels-app-Library/refs/heads/github-pages/Readme-images/Screenshot%202026-11-21%20164006.png" width="300" alt="Example">
+
+![Update required](https://raw.githubusercontent.com/Suspendednetwork/Leonels-app-Library/refs/heads/github-pages/Readme-images/Screenshot%202026-11-21%20164006.png)
 
 
 ---
