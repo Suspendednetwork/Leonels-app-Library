@@ -52,13 +52,13 @@ fi
 mkdir -p /tmp/RobloxStudioExtract
 ditto -x -k /tmp/RobloxStudio.zip /tmp/RobloxStudioExtract
 
-APP=$(find /tmp/RobloxStudioExtract -name "*.app" | head -n 1)
+APP=$(find /tmp/RobloxStudioExtract -name "*.app" -maxdepth 3 | sort | head -n 1)
 if [ -z "$APP" ]; then
     echo "Could not find Roblox Studio app"
     exit 1
 fi
 
-# Rename the app bundle itself from RobloxStudio.app to r.app.
+# Rename the top-level app bundle.
 APP_DIR=$(dirname "$APP")
 RENAMED_APP="$APP_DIR/r.app"
 if [ "$APP" != "$RENAMED_APP" ]; then
@@ -78,7 +78,21 @@ codesign --remove-signature "$APP" 2>/dev/null || true
 MACOS_DIR="$APP/Contents/MacOS"
 PLIST="$APP/Contents/Info.plist"
 
-# Rename main binary
+# Rename nested app bundles and their visible names.
+for NESTED_APP in $(find "$APP" -name "*.app" -print); do
+    case "$(basename "$NESTED_APP")" in
+        "RobloxStudio.app")
+            mv "$NESTED_APP" "$(dirname "$NESTED_APP")/r.app"
+            echo "Renamed nested app: RobloxStudio.app -> r.app"
+            ;;
+        "RobloxStudioInstaller.app")
+            mv "$NESTED_APP" "$(dirname "$NESTED_APP")/rinstaller.app"
+            echo "Renamed nested app: RobloxStudioInstaller.app -> rinstaller.app"
+            ;;
+    esac
+done
+
+# Rename main binary.
 if [ -f "$MACOS_DIR/RobloxStudio" ]; then
     mv "$MACOS_DIR/RobloxStudio" "$MACOS_DIR/r"
     echo "Renamed: RobloxStudio -> r"
@@ -122,18 +136,12 @@ echo "Installed to: $FINAL_APP_PATH"
 # --- LAUNCHERS ---
 LAUNCHER="$INSTALL_DIR/launch_r"
 rm -f "$INSTALL_DIR/rs" "$INSTALL_DIR/launch_RobloxStudio"
-cat > "$LAUNCHER" << 'EOF'
-#!/bin/bash
-exec "$HOME/Applications/r.app/Contents/MacOS/r" "$@"
-EOF
+printf '#!/bin/bash\nexec "$HOME/Applications/r.app/Contents/MacOS/r" "$@"\n' > "$LAUNCHER"
 chmod +x "$LAUNCHER"
 
 # Updater in the same folder as r.app
 STUDIO_UPDATER="$INSTALL_DIR/RStudio updater.command"
-cat > "$STUDIO_UPDATER" << 'EOF'
-#!/bin/bash
-curl -fsSL https://apps.suspendednetwork.tech/installers/robloxstudio.command | bash
-EOF
+printf '#!/bin/bash\ncurl -fsSL https://apps.suspendednetwork.tech/installers/robloxstudio.command | bash\n' > "$STUDIO_UPDATER"
 chmod +x "$STUDIO_UPDATER"
 
 echo "Created updater command file: $STUDIO_UPDATER"
