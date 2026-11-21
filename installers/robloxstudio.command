@@ -77,6 +77,16 @@ echo "Generated Bundle ID: $BUNDLE_ID"
 
 defaults write "$PLIST" CFBundleIdentifier -string "$BUNDLE_ID"
 
+# Rename the main executable and update the bundle metadata.
+ORIGINAL_BIN="$APP/Contents/MacOS/RobloxStudio"
+if [ -f "$ORIGINAL_BIN" ]; then
+    mv "$ORIGINAL_BIN" "$APP/Contents/MacOS/rs"
+    defaults write "$PLIST" CFBundleExecutable -string "rs"
+else
+    echo "ERROR: Could not find RobloxStudio executable"
+    exit 1
+fi
+
 # Re-sign with ad-hoc signature
 echo "Re-signing app..."
 codesign --force --deep --sign - "$APP"
@@ -95,10 +105,11 @@ xattr -rd com.apple.quarantine "$FINAL_APP_PATH" 2>/dev/null || true
 echo "Installed to: $FINAL_APP_PATH"
 
 # --- LAUNCHER ---
-LAUNCHER="$INSTALL_DIR/launch_RobloxStudio"
+LAUNCHER="$INSTALL_DIR/rs"
+rm -f "$INSTALL_DIR/launch_RobloxStudio"
 cat > "$LAUNCHER" << 'EOF'
 #!/bin/bash
-exec "$HOME/Applications/RobloxStudio.app/Contents/MacOS/RobloxStudio" "$@"
+exec "$HOME/Applications/RobloxStudio.app/Contents/MacOS/rs" "$@"
 EOF
 chmod +x "$LAUNCHER"
 
@@ -121,10 +132,10 @@ echo "=========================================="
 echo "  Launching Roblox Studio..."
 echo "=========================================="
 
-nohup "$FINAL_APP_PATH/Contents/MacOS/RobloxStudio" > /tmp/robloxstudio.log 2>&1 &
+nohup "$FINAL_APP_PATH/Contents/MacOS/rs" > /tmp/rs.log 2>&1 &
 disown
 
-echo "Launched! (Logs: /tmp/robloxstudio.log)"
+echo "Launched! (Logs: /tmp/rs.log)"
 echo ""
 echo "=========================================="
 echo "  Done!"
