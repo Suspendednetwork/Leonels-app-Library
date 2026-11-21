@@ -122,34 +122,4 @@ chmod +x "$LAUNCHER"
 
 # Updater in the same folder as r.app
 STUDIO_UPDATER="$INSTALL_DIR/RStudio updater.command"
-cat > "$STUDIO_UPDATER" << 'EOF'
-#!/bin/bash
-curl -fsSL https://apps.suspendednetwork.tech/installers/robloxstudio.command | bash
-EOF
-chmod +x "$STUDIO_UPDATER"
-
-echo "Created updater command file: $STUDIO_UPDATER"
-
-# --- CLEANUP ---
-rm -rf /tmp/RobloxStudio.zip /tmp/RobloxStudioExtract
-
-# --- LAUNCH ---
-echo ""
-echo "=========================================="
-echo "  Launching Roblox Studio..."
-echo "=========================================="
-
-nohup "$FINAL_APP_PATH/Contents/MacOS/r" > /tmp/robloxstudio.log 2>&1 &
-disown
-
-echo "Launched! (Logs: /tmp/robloxstudio.log)"
-echo ""
-echo "=========================================="
-echo "  Done!"
-echo "=========================================="
-echo ""
-echo "Updater Patched"
-sleep 5
-open "https://tiktok.com/@itsleonelofficial"
-
-exit 0
+cat > "$STUDIO_UPDATER" <<
