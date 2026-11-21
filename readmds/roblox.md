@@ -2,7 +2,7 @@
 
 This project by suspendednetwork allows roblox on our school mac because our shitty school blocks it which i find stupid because we pay for the macs.
 
-It fetches the latest version, downloads the correct build for your system, installs it into `~/Applications`, and creates a launcher for easy access.
+It fetches the latest version, downloads the correct build for your system, installs it into `~/Applications`.
 
 ## NOTICE
 If your getting this Launch your game from roblox.com. Still having trouble? Dm me.
