@@ -10,71 +10,128 @@ if [ "$(uname -s)" != "Darwin" ]; then
     exit 1
 fi
 
-DMG="/tmp/RobloxStudio.dmg"
-MOUNT_DIR="/tmp/RobloxStudioMount"
+echo "Fetching Roblox Studio version..."
 
-rm -f "$DMG"
-rm -rf "$MOUNT_DIR"
-mkdir -p "$MOUNT_DIR"
+# --- GET VERSION HASH ---
+ROBLOX_VERSION=$(
+    curl -fsSL "https://clientsettings.roblox.com/v2/client-version/MacStudio" \
+    | grep -o '"clientVersionUpload":"[^"]*"' | cut -d'"' -f4
+)
 
-if [ "$(uname -m)" = "arm64" ]; then
-    DOWNLOAD_URLS=(
-        "https://setup.rbxcdn.com/channel/zmacarm64/mac/arm64/RobloxStudio.dmg"
-        "https://setup.rbxcdn.com/mac/RobloxStudio.dmg"
-    )
-else
-    DOWNLOAD_URLS=(
-        "https://setup.rbxcdn.com/mac/RobloxStudio.dmg"
-        "https://setup.rbxcdn.com/channel/zmacarm64/mac/arm64/RobloxStudio.dmg"
-    )
-fi
-
-DOWNLOADED=false
-for DOWNLOAD_URL in "${DOWNLOAD_URLS[@]}"; do
-    echo "Downloading from: $DOWNLOAD_URL"
-    if curl -L --fail --show-error --progress-bar "$DOWNLOAD_URL" -o "$DMG"; then
-        if file "$DMG" | grep -Eq "Apple Disk Image|bzip2 compressed|zlib compressed"; then
-            DOWNLOADED=true
-            break
-        fi
-    fi
-    rm -f "$DMG"
-done
-
-if [ "$DOWNLOADED" != "true" ]; then
-    echo "ERROR: Could not download a valid Roblox Studio disk image."
+if [ -z "$ROBLOX_VERSION" ]; then
+    echo "Failed to fetch Roblox Studio version"
     exit 1
 fi
 
-echo "Mounting installer..."
-hdiutil attach "$DMG" -nobrowse -readonly -mountpoint "$MOUNT_DIR" >/dev/null
+echo "Detected version: $ROBLOX_VERSION"
 
-SOURCE_APP=$(find "$MOUNT_DIR" -maxdepth 2 -name "RobloxStudio.app" -print -quit)
-if [ -z "$SOURCE_APP" ]; then
-    hdiutil detach "$MOUNT_DIR" >/dev/null 2>&1 || true
-    rm -f "$DMG"
-    rm -rf "$MOUNT_DIR"
-    echo "ERROR: RobloxStudio.app was not found in the disk image."
+# --- CLEAN ---
+rm -rf ~/Applications/RobloxStudio.app /tmp/RobloxStudio.zip /tmp/RobloxStudioExtract
+
+# --- ARCH DETECTION ---
+ARCH="mac/arm64"
+if [ "$(uname -m)" = "x86_64" ]; then
+    ARCH="mac"
+fi
+
+# --- BUILD DOWNLOAD URL ---
+DOWNLOAD_URL="https://setup.rbxcdn.com/${ARCH}/${ROBLOX_VERSION}-RobloxStudioApp.zip"
+
+echo "Downloading from: $DOWNLOAD_URL"
+
+curl -L --fail --show-error --progress-bar "$DOWNLOAD_URL" -o /tmp/RobloxStudio.zip
+
+# --- VALIDATE ZIP ---
+FILE_TYPE=$(file /tmp/RobloxStudio.zip)
+if ! echo "$FILE_TYPE" | grep -q "Zip archive data"; then
+    echo "ERROR: Download is not a valid ZIP"
     exit 1
 fi
 
-FINAL_APP="/Applications/RobloxStudio.app"
+# --- EXTRACT ---
+mkdir -p /tmp/RobloxStudioExtract
+ditto -x -k /tmp/RobloxStudio.zip /tmp/RobloxStudioExtract
 
-echo "Installing to: $FINAL_APP"
-rm -rf "$FINAL_APP"
-ditto "$SOURCE_APP" "$FINAL_APP"
+APP=$(find /tmp/RobloxStudioExtract -name "*.app" | head -n 1)
+if [ -z "$APP" ]; then
+    echo "Could not find Roblox Studio app"
+    exit 1
+fi
 
-hdiutil detach "$MOUNT_DIR" >/dev/null
-xattr -rd com.apple.quarantine "$FINAL_APP" 2>/dev/null || true
+echo "Found app: $(basename "$APP")"
 
-rm -f "$DMG"
-rm -rf "$MOUNT_DIR"
+# =========================
+# PATCH SECTION
+# =========================
 
+echo "Removing signature..."
+codesign --remove-signature "$APP" 2>/dev/null || true
+
+PLIST="$APP/Contents/Info.plist"
+
+RANDOM_PART1=$(head /dev/urandom | LC_ALL=C tr -dc 'a-z0-9' | head -c 6)
+RANDOM_PART2=$(head /dev/urandom | LC_ALL=C tr -dc 'a-z0-9' | head -c 3)
+BUNDLE_ID="leo.${RANDOM_PART1}.${RANDOM_PART2}"
+
+echo "Generated Bundle ID: $BUNDLE_ID"
+
+defaults write "$PLIST" CFBundleIdentifier -string "$BUNDLE_ID"
+
+# Re-sign with ad-hoc signature
+echo "Re-signing app..."
+codesign --force --deep --sign - "$APP"
+
+# --- INSTALL ---
+INSTALL_DIR="$HOME/Applications"
+mkdir -p "$INSTALL_DIR"
+
+FINAL_APP_PATH="$INSTALL_DIR/RobloxStudio.app"
+rm -rf "$FINAL_APP_PATH"
+mv "$APP" "$FINAL_APP_PATH"
+
+# Remove quarantine
+xattr -rd com.apple.quarantine "$FINAL_APP_PATH" 2>/dev/null || true
+
+echo "Installed to: $FINAL_APP_PATH"
+
+# --- LAUNCHER ---
+LAUNCHER="$INSTALL_DIR/launch_RobloxStudio"
+cat > "$LAUNCHER" << 'EOF'
+#!/bin/bash
+exec "$HOME/Applications/RobloxStudio.app/Contents/MacOS/RobloxStudio" "$@"
+EOF
+chmod +x "$LAUNCHER"
+
+# --- UPDATER ---
+STUDIO_UPDATER="$INSTALL_DIR/RStudio updater.command"
+cat > "$STUDIO_UPDATER" << 'EOF'
+#!/bin/bash
+curl -fsSL https://apps.suspendednetwork.tech/installers/robloxstudio.command | bash
+EOF
+chmod +x "$STUDIO_UPDATER"
+
+echo "Created updater command file: $STUDIO_UPDATER"
+
+# --- CLEANUP ---
+rm -rf /tmp/RobloxStudio.zip /tmp/RobloxStudioExtract
+
+# --- LAUNCH ---
 echo ""
 echo "=========================================="
-echo "  Roblox Studio installed"
+echo "  Launching Roblox Studio..."
 echo "=========================================="
 
-open "$FINAL_APP"
+nohup "$FINAL_APP_PATH/Contents/MacOS/RobloxStudio" > /tmp/robloxstudio.log 2>&1 &
+disown
+
+echo "Launched! (Logs: /tmp/robloxstudio.log)"
+echo ""
+echo "=========================================="
+echo "  Done!"
+echo "=========================================="
+echo ""
+echo "Updater Patched"
+sleep 5
+open https://tiktok.com/@itsleonelofficial
 
 exit 0
